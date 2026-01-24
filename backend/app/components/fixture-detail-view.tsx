@@ -139,12 +139,13 @@ export function FixtureDetailView({
 
           {stadiumImage && (
             <div className="flex justify-center mb-4">
-              <img
-                src={stadiumImage}
-                alt="Stadium"
-                className="rounded-xl w-full max-w-sm"
-                style={{ boxShadow: "0 12px 30px rgba(0,0,0,0.35)" }}
-              />
+              <div className="w-full max-w-sm h-24 overflow-hidden">
+                <img
+                  src={stadiumImage}
+                  alt="Stadium"
+                  className="w-full h-full object-cover"
+                />
+              </div>
             </div>
           )}
 
