@@ -1,0 +1,549 @@
+{
+    "leagueId":  498513,
+    "teams":  [
+                  {
+                      "teamName":  "Banter Bros",
+                      "members":  [
+                                      {
+                                          "managerKey":  "Aadi",
+                                          "managerName":  "Aditya Halwe",
+                                          "entryId":  1956946,
+                                          "fplTeamName":  "BAB - Aadi"
+                                      },
+                                      {
+                                          "managerKey":  "Aniket",
+                                          "managerName":  "Aniket Sainani",
+                                          "entryId":  2169008,
+                                          "fplTeamName":  "BAB - Aniket"
+                                      }
+                                  ]
+                  },
+                  {
+                      "teamName":  "Bianconeri Blues",
+                      "members":  [
+                                      {
+                                          "managerKey":  "Akshay",
+                                          "managerName":  "Akshay Hariharan",
+                                          "entryId":  10959,
+                                          "fplTeamName":  "BIB - Akshay H."
+                                      },
+                                      {
+                                          "managerKey":  "Arun",
+                                          "managerName":  "Arun Raghavan Guru",
+                                          "entryId":  580281,
+                                          "fplTeamName":  "BIB - Arun"
+                                      }
+                                  ]
+                  },
+                  {
+                      "teamName":  "Blaugrana Cules",
+                      "members":  [
+                                      {
+                                          "managerKey":  "Chirag",
+                                          "managerName":  "Chirag Chawla",
+                                          "entryId":  2487276,
+                                          "fplTeamName":  "BC - Chirag"
+                                      },
+                                      {
+                                          "managerKey":  "Nachiket",
+                                          "managerName":  "Nachiket Chawla",
+                                          "entryId":  2547868,
+                                          "fplTeamName":  "BC - Nachiket"
+                                      }
+                                  ]
+                  },
+                  {
+                      "teamName":  "Dark Knights",
+                      "members":  [
+                                      {
+                                          "managerKey":  "Abdul",
+                                          "managerName":  "Abdul Salam Kamal",
+                                          "entryId":  2179312,
+                                          "fplTeamName":  "DK - Abdul"
+                                      },
+                                      {
+                                          "managerKey":  "Anosh",
+                                          "managerName":  "Anosh Daji",
+                                          "entryId":  449240,
+                                          "fplTeamName":  "DK-AD"
+                                      }
+                                  ]
+                  },
+                  {
+                      "teamName":  "Despicable Memelennials",
+                      "members":  [
+                                      {
+                                          "managerKey":  "Anurag",
+                                          "managerName":  "Anurag Toshniwal",
+                                          "entryId":  4080042,
+                                          "fplTeamName":  "DM - Anurag"
+                                      },
+                                      {
+                                          "managerKey":  "Samarth",
+                                          "managerName":  "Samarth Mundra",
+                                          "entryId":  7228653,
+                                          "fplTeamName":  "DM-Samarth"
+                                      }
+                                  ]
+                  },
+                  {
+                      "teamName":  "Filthy Foxes",
+                      "members":  [
+                                      {
+                                          "managerKey":  "Ayush",
+                                          "managerName":  "Ayush Nagar",
+                                          "entryId":  5436698,
+                                          "fplTeamName":  "FF - Ayush"
+                                      },
+                                      {
+                                          "managerKey":  "Saket",
+                                          "managerName":  "Saket Halway",
+                                          "entryId":  6690271,
+                                          "fplTeamName":  "FF-Saket"
+                                      }
+                                  ]
+                  },
+                  {
+                      "teamName":  "Footballing Gods",
+                      "members":  [
+                                      {
+                                          "managerKey":  "Pankaj",
+                                          "managerName":  "Pankaj Shende",
+                                          "entryId":  19716,
+                                          "fplTeamName":  "FG - Pankaj"
+                                      },
+                                      {
+                                          "managerKey":  "Ramen",
+                                          "managerName":  "DE-LIGT - ED",
+                                          "entryId":  17096,
+                                          "fplTeamName":  "FG-Ramen"
+                                      }
+                                  ]
+                  },
+                  {
+                      "teamName":  "Goal Diggers",
+                      "members":  [
+                                      {
+                                          "managerKey":  "Rishabh S",
+                                          "managerName":  "Rishab Saini TvT",
+                                          "entryId":  27597,
+                                          "fplTeamName":  "GD - Rishab"
+                                      },
+                                      {
+                                          "managerKey":  "Yash G",
+                                          "managerName":  "Smita Gokani",
+                                          "entryId":  1999030,
+                                          "fplTeamName":  "GD - Yash Gokani"
+                                      }
+                                  ]
+                  },
+                  {
+                      "teamName":  "Highbury Citizens",
+                      "members":  [
+                                      {
+                                          "managerKey":  "Avirup",
+                                          "managerName":  "A.R.N. Mukherjee",
+                                          "entryId":  5141069,
+                                          "fplTeamName":  "HC - Avirup"
+                                      },
+                                      {
+                                          "managerKey":  "Devraj",
+                                          "managerName":  "Devraj Banerjee",
+                                          "entryId":  5123494,
+                                          "fplTeamName":  "HC-Devraj"
+                                      }
+                                  ]
+                  },
+                  {
+                      "teamName":  "Invisible Royals",
+                      "members":  [
+                                      {
+                                          "managerKey":  "Ashwin",
+                                          "managerName":  "Ashwin N",
+                                          "entryId":  5650872,
+                                          "fplTeamName":  "IR - Ashwin"
+                                      },
+                                      {
+                                          "managerKey":  "Chintan",
+                                          "managerName":  "Chintan shah",
+                                          "entryId":  5400487,
+                                          "fplTeamName":  "IR-Chintan"
+                                      }
+                                  ]
+                  },
+                  {
+                      "teamName":  "Jama Juggernauts",
+                      "members":  [
+                                      {
+                                          "managerKey":  "Abrar",
+                                          "managerName":  "Abrar Mughal",
+                                          "entryId":  1857573,
+                                          "fplTeamName":  "JJ-Abrar"
+                                      },
+                                      {
+                                          "managerKey":  "Dharm",
+                                          "managerName":  "Dharm Shah",
+                                          "entryId":  2380788,
+                                          "fplTeamName":  "JJ - Dharm"
+                                      }
+                                  ]
+                  },
+                  {
+                      "teamName":  "JoBros",
+                      "members":  [
+                                      {
+                                          "managerKey":  "Manik",
+                                          "managerName":  "M Malhotra",
+                                          "entryId":  2871840,
+                                          "fplTeamName":  "JB - Manik"
+                                      },
+                                      {
+                                          "managerKey":  "Pankaj",
+                                          "managerName":  "Pankaj Bhatia",
+                                          "entryId":  3610641,
+                                          "fplTeamName":  "JB - Pankaj"
+                                      }
+                                  ]
+                  },
+                  {
+                      "teamName":  "Jota Ke Chhorey",
+                      "members":  [
+                                      {
+                                          "managerKey":  "Angad",
+                                          "managerName":  "Angy S B",
+                                          "entryId":  3144697,
+                                          "fplTeamName":  "JKC- Angy"
+                                      },
+                                      {
+                                          "managerKey":  "Harsh",
+                                          "managerName":  "Harsh Bharvada",
+                                          "entryId":  9337960,
+                                          "fplTeamName":  "JKC - Harsh"
+                                      }
+                                  ]
+                  },
+                  {
+                      "teamName":  "Maresca\u0027s Villagers",
+                      "members":  [
+                                      {
+                                          "managerKey":  "Parag",
+                                          "managerName":  "Parag Gaikwd",
+                                          "entryId":  3179959,
+                                          "fplTeamName":  "MV - Parag"
+                                      },
+                                      {
+                                          "managerKey":  "Yash C",
+                                          "managerName":  "Yash C",
+                                          "entryId":  5930823,
+                                          "fplTeamName":  "MV - Yash"
+                                      }
+                                  ]
+                  },
+                  {
+                      "teamName":  "Merseyside Mancunians",
+                      "members":  [
+                                      {
+                                          "managerKey":  "Shubham",
+                                          "managerName":  "Shivani Chavan",
+                                          "entryId":  529065,
+                                          "fplTeamName":  "MM- Shubham"
+                                      },
+                                      {
+                                          "managerKey":  "Subhajit",
+                                          "managerName":  "Subhajit Das",
+                                          "entryId":  4087222,
+                                          "fplTeamName":  "MM-Subhajit"
+                                      }
+                                  ]
+                  },
+                  {
+                      "teamName":  "North Eastern Hillibilies",
+                      "members":  [
+                                      {
+                                          "managerKey":  "Bhairab",
+                                          "managerName":  "Bhairab Gogoi",
+                                          "entryId":  600026,
+                                          "fplTeamName":  "NEH-Bhairab"
+                                      },
+                                      {
+                                          "managerKey":  "Pulakesh",
+                                          "managerName":  "Pulakesh Das",
+                                          "entryId":  864279,
+                                          "fplTeamName":  "NEH-Pulakesh"
+                                      }
+                                  ]
+                  },
+                  {
+                      "teamName":  "Odia Outlaws",
+                      "members":  [
+                                      {
+                                          "managerKey":  "Sankalp",
+                                          "managerName":  "Sankalp Outlaws",
+                                          "entryId":  2549927,
+                                          "fplTeamName":  "OO-Sankalp"
+                                      },
+                                      {
+                                          "managerKey":  "Suvendu",
+                                          "managerName":  "Suvendu Subhrajyoti",
+                                          "entryId":  2641137,
+                                          "fplTeamName":  "OO-SUVENDU"
+                                      }
+                                  ]
+                  },
+                  {
+                      "teamName":  "Peaky Blinders",
+                      "members":  [
+                                      {
+                                          "managerKey":  "Naman",
+                                          "managerName":  "Nam Man",
+                                          "entryId":  5130955,
+                                          "fplTeamName":  "PB- Naman"
+                                      },
+                                      {
+                                          "managerKey":  "Sachin",
+                                          "managerName":  "Sachin Mittaal",
+                                          "entryId":  4365338,
+                                          "fplTeamName":  "PB - Sachiin"
+                                      }
+                                  ]
+                  },
+                  {
+                      "teamName":  "Reds of Winterfell",
+                      "members":  [
+                                      {
+                                          "managerKey":  "Anshuman",
+                                          "managerName":  "Anshuman Gaonsindhe",
+                                          "entryId":  3193774,
+                                          "fplTeamName":  "RW - Anshuman"
+                                      },
+                                      {
+                                          "managerKey":  "Rishabh M",
+                                          "managerName":  "Rishabh Mehta",
+                                          "entryId":  4299572,
+                                          "fplTeamName":  "RW - Rishabh"
+                                      }
+                                  ]
+                  },
+                  {
+                      "teamName":  "Royal Indians",
+                      "members":  [
+                                      {
+                                          "managerKey":  "Deepesh",
+                                          "managerName":  "DIPESH GAGGAR",
+                                          "entryId":  4253839,
+                                          "fplTeamName":  "RI DIPESH"
+                                      },
+                                      {
+                                          "managerKey":  "Saahil",
+                                          "managerName":  "SAAHIL JAVKAR",
+                                          "entryId":  3120343,
+                                          "fplTeamName":  "RI - Saahil"
+                                      }
+                                  ]
+                  },
+                  {
+                      "teamName":  "Royal Reds",
+                      "members":  [
+                                      {
+                                          "managerKey":  "Akshay",
+                                          "managerName":  "akshay joharle",
+                                          "entryId":  3157249,
+                                          "fplTeamName":  "RR - Akshay"
+                                      },
+                                      {
+                                          "managerKey":  "Gaurav",
+                                          "managerName":  "Gaurav G",
+                                          "entryId":  86139,
+                                          "fplTeamName":  "RR-Gaurav"
+                                      }
+                                  ]
+                  },
+                  {
+                      "teamName":  "Scarlet Reds",
+                      "members":  [
+                                      {
+                                          "managerKey":  "Paritosh",
+                                          "managerName":  "Paritosh Mishra",
+                                          "entryId":  55642,
+                                          "fplTeamName":  "SR - Paritosh"
+                                      },
+                                      {
+                                          "managerKey":  "Ujjwal",
+                                          "managerName":  "Ujjwal Agrawal",
+                                          "entryId":  189849,
+                                          "fplTeamName":  "SR-Ujjwal"
+                                      }
+                                  ]
+                  },
+                  {
+                      "teamName":  "Scouse Force",
+                      "members":  [
+                                      {
+                                          "managerKey":  "Kapil",
+                                          "managerName":  "Kapil Ingale",
+                                          "entryId":  1258497,
+                                          "fplTeamName":  "SF-Kapil_01"
+                                      },
+                                      {
+                                          "managerKey":  "Kartik",
+                                          "managerName":  "Kartik Patil",
+                                          "entryId":  3605964,
+                                          "fplTeamName":  "SF-Kartik"
+                                      }
+                                  ]
+                  },
+                  {
+                      "teamName":  "Sharingan Warriors",
+                      "members":  [
+                                      {
+                                          "managerKey":  "Shaibaz",
+                                          "managerName":  "Shaibaz Khan",
+                                          "entryId":  3263009,
+                                          "fplTeamName":  "SW- Shaibaz"
+                                      },
+                                      {
+                                          "managerKey":  "Yashasva",
+                                          "managerName":  "Yashasva Tungare",
+                                          "entryId":  39037,
+                                          "fplTeamName":  "SW- Yashasva"
+                                      }
+                                  ]
+                  },
+                  {
+                      "teamName":  "Slippery Legends",
+                      "members":  [
+                                      {
+                                          "managerKey":  "Aakash",
+                                          "managerName":  "Aakash Shukla",
+                                          "entryId":  3123314,
+                                          "fplTeamName":  "SL - Aakash"
+                                      },
+                                      {
+                                          "managerKey":  "Kush",
+                                          "managerName":  "Kush Shukla",
+                                          "entryId":  1296207,
+                                          "fplTeamName":  "SL - Kush"
+                                      }
+                                  ]
+                  },
+                  {
+                      "teamName":  "Stretford Kops",
+                      "members":  [
+                                      {
+                                          "managerKey":  "Aditya",
+                                          "managerName":  "A S",
+                                          "entryId":  6760,
+                                          "fplTeamName":  "SK - Aditya"
+                                      },
+                                      {
+                                          "managerKey":  "Jeetesh",
+                                          "managerName":  "Jeetesh Assudani",
+                                          "entryId":  7589170,
+                                          "fplTeamName":  "SK-Jeetesh"
+                                      }
+                                  ]
+                  },
+                  {
+                      "teamName":  "Super Saiyans",
+                      "members":  [
+                                      {
+                                          "managerKey":  "Gautam",
+                                          "managerName":  "Gautam Mohanty",
+                                          "entryId":  3122754,
+                                          "fplTeamName":  "SS-Gautam"
+                                      },
+                                      {
+                                          "managerKey":  "Shivam",
+                                          "managerName":  "Shivam Hargunani",
+                                          "entryId":  3118967,
+                                          "fplTeamName":  "SS - Shivam"
+                                      }
+                                  ]
+                  },
+                  {
+                      "teamName":  "Team Rocket",
+                      "members":  [
+                                      {
+                                          "managerKey":  "Ketan",
+                                          "managerName":  "Ketan B",
+                                          "entryId":  4670961,
+                                          "fplTeamName":  "TR - Ketan"
+                                      },
+                                      {
+                                          "managerKey":  "Raunak",
+                                          "managerName":  "Raunak Gupta",
+                                          "entryId":  2488961,
+                                          "fplTeamName":  "TR - Raunak"
+                                      }
+                                  ]
+                  },
+                  {
+                      "teamName":  "The Anfield Devils",
+                      "members":  [
+                                      {
+                                          "managerKey":  "Aditya",
+                                          "managerName":  "Aditya Rao",
+                                          "entryId":  8336609,
+                                          "fplTeamName":  "TAD - Aditya"
+                                      },
+                                      {
+                                          "managerKey":  "Ankur",
+                                          "managerName":  "Ankur Srivastava",
+                                          "entryId":  2001511,
+                                          "fplTeamName":  "TAD - Ankur"
+                                      }
+                                  ]
+                  },
+                  {
+                      "teamName":  "The Invincibles",
+                      "members":  [
+                                      {
+                                          "managerKey":  "Apurv",
+                                          "managerName":  "Akshay Kulkarni",
+                                          "entryId":  3165356,
+                                          "fplTeamName":  "INV - Apurv"
+                                      },
+                                      {
+                                          "managerKey":  "Sushank",
+                                          "managerName":  "Suhani Pimple",
+                                          "entryId":  5253559,
+                                          "fplTeamName":  "INV - Sushank"
+                                      }
+                                  ]
+                  },
+                  {
+                      "teamName":  "Thunderbolts",
+                      "members":  [
+                                      {
+                                          "managerKey":  "Kapil C",
+                                          "managerName":  "Kapil Chaudhary",
+                                          "entryId":  3125421,
+                                          "fplTeamName":  "TB- Kapil"
+                                      },
+                                      {
+                                          "managerKey":  "Prashant",
+                                          "managerName":  "Prashant Chaudhary",
+                                          "entryId":  961158,
+                                          "fplTeamName":  "TB-Prashant"
+                                      }
+                                  ]
+                  },
+                  {
+                      "teamName":  "xG Xorcists",
+                      "members":  [
+                                      {
+                                          "managerKey":  "Subham",
+                                          "managerName":  "Subham Sushobhit",
+                                          "entryId":  5370853,
+                                          "fplTeamName":  "XGX - Subham"
+                                      },
+                                      {
+                                          "managerKey":  "Swagat",
+                                          "managerName":  "Swagat Das",
+                                          "entryId":  3372682,
+                                          "fplTeamName":  "XGX - Swagat"
+                                      }
+                                  ]
+                  }
+              ]
+}

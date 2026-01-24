@@ -1,0 +1,73 @@
+{
+    "default":  {
+
+                },
+    "byGameweek":  {
+                       "23":  {
+                                  "gw23-4":  {
+                                                 "homeCaptain":  5123494,
+                                                 "awayCaptain":  9337960
+                                             },
+                                  "gw23-9":  {
+                                                 "homeCaptain":  4365338,
+                                                 "awayCaptain":  3193774
+                                             },
+                                  "gw23-6":  {
+                                                 "homeCaptain":  580281,
+                                                 "awayCaptain":  3120343
+                                             },
+                                  "gw23-7":  {
+                                                 "homeCaptain":  449240,
+                                                 "awayCaptain":  null
+                                             },
+                                  "gw23-8":  {
+                                                 "homeCaptain":  2488961,
+                                                 "awayCaptain":  2641137
+                                             },
+                                  "gw23-12":  {
+                                                  "homeCaptain":  2380788,
+                                                  "awayCaptain":  5370853
+                                              },
+                                  "gw23-16":  {
+                                                  "homeCaptain":  2547868,
+                                                  "awayCaptain":  864279
+                                              },
+                                  "gw23-2":  {
+                                                 "homeCaptain":  3605964,
+                                                 "awayCaptain":  3123314
+                                             },
+                                  "gw23-3":  {
+                                                 "homeCaptain":  4087222,
+                                                 "awayCaptain":  7228653
+                                             },
+                                  "gw23-14":  {
+                                                  "homeCaptain":  27597,
+                                                  "awayCaptain":  3125421
+                                              },
+                                  "gw23-5":  {
+                                                 "homeCaptain":  2001511,
+                                                 "awayCaptain":  null
+                                             },
+                                  "gw23-11":  {
+                                                  "homeCaptain":  6690271,
+                                                  "awayCaptain":  55642
+                                              },
+                                  "gw23-13":  {
+                                                  "homeCaptain":  3118967,
+                                                  "awayCaptain":  null
+                                              },
+                                  "gw23-15":  {
+                                                  "homeCaptain":  3165356,
+                                                  "awayCaptain":  5930823
+                                              },
+                                  "gw23-10":  {
+                                                  "homeCaptain":  3157249,
+                                                  "awayCaptain":  39037
+                                              },
+                                  "gw23-1":  {
+                                                 "homeCaptain":  null,
+                                                 "awayCaptain":  3610641
+                                             }
+                              }
+                   }
+}

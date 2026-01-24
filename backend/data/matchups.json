@@ -1,0 +1,169 @@
+{
+  "leagueId": 498513,
+  "matchupsByGameweek": {
+    "23": [
+      {
+        "id": "gw23-1",
+        "home": { "name": "Invisible Royals", "managers": [] },
+        "away": { "name": "JoBros", "managers": [] }
+      },
+      {
+        "id": "gw23-2",
+        "home": { "name": "Scouse Force", "managers": [] },
+        "away": { "name": "Slippery Legends", "managers": [] }
+      },
+      {
+        "id": "gw23-3",
+        "home": { "name": "Merseyside Mancunians", "managers": [] },
+        "away": { "name": "Despicable Memelennials", "managers": [] }
+      },
+      {
+        "id": "gw23-4",
+        "home": { "name": "Highbury Citizens", "managers": [] },
+        "away": { "name": "Jota Ke Chhorey", "managers": [] }
+      },
+      {
+        "id": "gw23-5",
+        "home": { "name": "The Anfield Devils", "managers": [] },
+        "away": { "name": "Banter Bros", "managers": [] }
+      },
+      {
+        "id": "gw23-6",
+        "home": { "name": "Bianconeri Blues", "managers": [] },
+        "away": { "name": "Royal Indians", "managers": [] }
+      },
+      {
+        "id": "gw23-7",
+        "home": { "name": "Dark Knights", "managers": [] },
+        "away": { "name": "Footballing Gods", "managers": [] }
+      },
+      {
+        "id": "gw23-8",
+        "home": { "name": "Team Rocket", "managers": [] },
+        "away": { "name": "Odia Outlaws", "managers": [] }
+      },
+      {
+        "id": "gw23-9",
+        "home": { "name": "Peaky Blinders", "managers": [] },
+        "away": { "name": "Reds of Winterfell", "managers": [] }
+      },
+      {
+        "id": "gw23-10",
+        "home": { "name": "Royal Reds", "managers": [] },
+        "away": { "name": "Sharingan Warriors", "managers": [] }
+      },
+      {
+        "id": "gw23-11",
+        "home": { "name": "Filthy Foxes", "managers": [] },
+        "away": { "name": "Scarlet Reds", "managers": [] }
+      },
+      {
+        "id": "gw23-12",
+        "home": { "name": "Jama Juggernauts", "managers": [] },
+        "away": { "name": "xG Xorcists", "managers": [] }
+      },
+      {
+        "id": "gw23-13",
+        "home": { "name": "Super Saiyans", "managers": [] },
+        "away": { "name": "Stretford Kops", "managers": [] }
+      },
+      {
+        "id": "gw23-14",
+        "home": { "name": "Goal Diggers", "managers": [] },
+        "away": { "name": "Thunderbolts", "managers": [] }
+      },
+      {
+        "id": "gw23-15",
+        "home": { "name": "The Invincibles", "managers": [] },
+        "away": { "name": "Maresca's Villagers", "managers": [] }
+      },
+      {
+        "id": "gw23-16",
+        "home": { "name": "Blaugrana Cules", "managers": [] },
+        "away": { "name": "North Eastern Hillibilies", "managers": [] }
+      }
+    ],
+    "24": [
+      {
+        "id": "gw24-1",
+        "home": { "name": "JoBros", "managers": [] },
+        "away": { "name": "Scouse Force", "managers": [] }
+      },
+      {
+        "id": "gw24-2",
+        "home": { "name": "Invisible Royals", "managers": [] },
+        "away": { "name": "Merseyside Mancunians", "managers": [] }
+      },
+      {
+        "id": "gw24-3",
+        "home": { "name": "Slippery Legends", "managers": [] },
+        "away": { "name": "Highbury Citizens", "managers": [] }
+      },
+      {
+        "id": "gw24-4",
+        "home": { "name": "Despicable Memelennials", "managers": [] },
+        "away": { "name": "The Anfield Devils", "managers": [] }
+      },
+      {
+        "id": "gw24-5",
+        "home": { "name": "Jota Ke Chhorey", "managers": [] },
+        "away": { "name": "Bianconeri Blues", "managers": [] }
+      },
+      {
+        "id": "gw24-6",
+        "home": { "name": "Banter Bros", "managers": [] },
+        "away": { "name": "Dark Knights", "managers": [] }
+      },
+      {
+        "id": "gw24-7",
+        "home": { "name": "Royal Indians", "managers": [] },
+        "away": { "name": "Team Rocket", "managers": [] }
+      },
+      {
+        "id": "gw24-8",
+        "home": { "name": "Footballing Gods", "managers": [] },
+        "away": { "name": "Odia Outlaws", "managers": [] }
+      },
+      {
+        "id": "gw24-9",
+        "home": { "name": "Reds of Winterfell", "managers": [] },
+        "away": { "name": "Royal Reds", "managers": [] }
+      },
+      {
+        "id": "gw24-10",
+        "home": { "name": "Peaky Blinders", "managers": [] },
+        "away": { "name": "Filthy Foxes", "managers": [] }
+      },
+      {
+        "id": "gw24-11",
+        "home": { "name": "Sharingan Warriors", "managers": [] },
+        "away": { "name": "Jama Juggernauts", "managers": [] }
+      },
+      {
+        "id": "gw24-12",
+        "home": { "name": "Scarlet Reds", "managers": [] },
+        "away": { "name": "Super Saiyans", "managers": [] }
+      },
+      {
+        "id": "gw24-13",
+        "home": { "name": "xG Xorcists", "managers": [] },
+        "away": { "name": "Goal Diggers", "managers": [] }
+      },
+      {
+        "id": "gw24-14",
+        "home": { "name": "Stretford Kops", "managers": [] },
+        "away": { "name": "The Invincibles", "managers": [] }
+      },
+      {
+        "id": "gw24-15",
+        "home": { "name": "Thunderbolts", "managers": [] },
+        "away": { "name": "Blaugrana Cules", "managers": [] }
+      },
+      {
+        "id": "gw24-16",
+        "home": { "name": "Maresca's Villagers", "managers": [] },
+        "away": { "name": "North Eastern Hillibilies", "managers": [] }
+      }
+    ]
+  }
+}
