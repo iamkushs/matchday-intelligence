@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
-import path from "path";
-import { promises as fs } from "fs";
+import matchupsData from "../../../data/matchups.json";
+import captainsData from "../../../data/captains.json";
+import teamsData from "../../../data/teams.json";
 import {
   buildElementToTeamMap,
   buildElementPointsMap,
@@ -23,16 +24,6 @@ import type {
 import { computeMatchupTotals } from "../../../lib/scoring";
 
 const CACHE_CONTROL_VALUE = "s-maxage=10, stale-while-revalidate=30";
-
-async function readJsonFile<T>(relativePath: string): Promise<T | null> {
-  try {
-    const fullPath = path.join(process.cwd(), relativePath);
-    const data = await fs.readFile(fullPath, "utf8");
-    return JSON.parse(data) as T;
-  } catch {
-    return null;
-  }
-}
 
 function getUniqueEntryIds(matchups: MatchupConfig[]) {
   const ids = new Set<number>();
@@ -89,15 +80,9 @@ export async function GET(request: Request) {
     warnings.push("Unable to detect current gameweek, defaulted to 1.");
   }
 
-  const [matchupsFile, captainsFile] = await Promise.all([
-    readJsonFile<MatchupsFile>("data/matchups.json"),
-    readJsonFile<CaptainsFile>("data/captains.json")
-  ]);
-  const teamsFile = await readJsonFile<TeamsFile>("data/teams.json");
-
-  if (!matchupsFile) {
-    warnings.push("Missing data/matchups.json; returning no matchups.");
-  }
+  const matchupsFile = matchupsData as MatchupsFile;
+  const captainsFile = captainsData as CaptainsFile;
+  const teamsFile = teamsData as TeamsFile;
 
   const gwKey = String(gw);
   let allMatchups =
