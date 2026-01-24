@@ -16,8 +16,8 @@ export type MatchupsFile = {
 };
 
 export type CaptainOverride = {
-  homeCaptain: number;
-  awayCaptain: number;
+  homeCaptain: number | null;
+  awayCaptain: number | null;
 };
 
 export type CaptainsFile = {
