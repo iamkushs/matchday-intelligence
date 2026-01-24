@@ -139,7 +139,7 @@ export function FixtureDetailView({
 
           {stadiumImage && (
             <div className="flex justify-center mb-4">
-              <div className="w-full max-w-sm h-[98px] overflow-hidden">
+              <div className="w-full max-w-sm h-[198px] overflow-hidden">
                 <img
                   src={stadiumImage}
                   alt="Stadium"
