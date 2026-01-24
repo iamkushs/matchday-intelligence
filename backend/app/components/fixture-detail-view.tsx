@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ArrowLeft, Crown } from "lucide-react";
 import type { MatchupResponse } from "../../lib/types";
+import { stadiumImages } from "../../lib/stadiumImages";
 import { Skeleton } from "./ui/skeleton";
 
 type FixtureDetailViewProps = {
@@ -57,6 +58,7 @@ export function FixtureDetailView({
   const pointsDiff = fixture.home.totalPoints - fixture.away.totalPoints;
   const leader =
     pointsDiff > 0 ? fixture.home.name : pointsDiff < 0 ? fixture.away.name : "Tie";
+  const stadiumImage = getStadiumImage(fixture.id, gw, stadiumImages);
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: "var(--fpl-bg-deep)" }}>
@@ -133,43 +135,42 @@ export function FixtureDetailView({
                 {fixture.away.totalPoints}
               </span>
             </div>
+          </div>
 
-            <div className="mt-4">
-              <p className="text-sm" style={{ color: "var(--fpl-text-muted)" }}>
-                {leader} {pointsDiff === 0 ? "level" : "leads"}{" "}
-                {pointsDiff !== 0 && (
-                  <>
-                    by{" "}
-                    <span
-                      className="font-semibold"
-                      style={{
-                        color: pointsDiff > 0 ? teamColors.home : teamColors.away
-                      }}
-                    >
-                      {Math.abs(pointsDiff)} pts
-                    </span>
-                  </>
-                )}
-              </p>
+          {stadiumImage && (
+            <div className="flex justify-center mb-4">
+              <img
+                src={stadiumImage}
+                alt="Stadium"
+                className="rounded-xl w-full max-w-sm"
+                style={{ boxShadow: "0 12px 30px rgba(0,0,0,0.35)" }}
+              />
             </div>
+          )}
+
+          <div className="text-center">
+            <p className="text-sm" style={{ color: "var(--fpl-text-muted)" }}>
+              {leader} {pointsDiff === 0 ? "level" : "leads"}{" "}
+              {pointsDiff !== 0 && (
+                <>
+                  by{" "}
+                  <span
+                    className="font-semibold"
+                    style={{
+                      color: pointsDiff > 0 ? teamColors.home : teamColors.away
+                    }}
+                  >
+                    {Math.abs(pointsDiff)} pts
+                  </span>
+                </>
+              )}
+            </p>
           </div>
         </section>
 
         <div className="px-5">
           <div className="h-px bg-white/5 mb-6" />
         </div>
-
-        <section className="px-5 mb-6">
-          <div className="flex items-center justify-between text-xs">
-            <span style={{ color: "var(--fpl-text-muted)" }}>Players left</span>
-            <span
-              className="font-semibold tabular-nums"
-              style={{ color: "var(--fpl-text-primary)" }}
-            >
-              {fixture.home.playersLeftToPlay} - {fixture.away.playersLeftToPlay}
-            </span>
-          </div>
-        </section>
 
         <section className="px-5 pb-8">
           <h2
@@ -184,11 +185,13 @@ export function FixtureDetailView({
               label="Home"
               side={fixture.home}
               accentColor={teamColors.home}
+              align="left"
             />
             <TeamBreakdown
               label="Away"
               side={fixture.away}
               accentColor={teamColors.away}
+              align="right"
             />
           </div>
         </section>
@@ -201,11 +204,13 @@ type TeamBreakdownProps = {
   label: string;
   side: MatchupResponse["home"];
   accentColor: string;
+  align: "left" | "right";
 };
 
-function TeamBreakdown({ label, side, accentColor }: TeamBreakdownProps) {
+function TeamBreakdown({ label, side, accentColor, align }: TeamBreakdownProps) {
   const captainName =
     side.managers.find((manager) => manager.isCaptain)?.managerName ?? "TBA";
+  const isRight = align === "right";
   return (
     <div
       className="p-4 rounded-lg"
@@ -214,7 +219,7 @@ function TeamBreakdown({ label, side, accentColor }: TeamBreakdownProps) {
         boxShadow: `0 0 0 1px ${accentColor}40`
       }}
     >
-      <div className="flex items-center justify-between mb-3">
+      <div className={`flex items-center justify-between mb-3 ${isRight ? "text-right" : ""}`}>
         <div className="text-sm font-semibold" style={{ color: accentColor }}>
           {label}
         </div>
@@ -223,30 +228,24 @@ function TeamBreakdown({ label, side, accentColor }: TeamBreakdownProps) {
         </div>
       </div>
 
-      <div className="text-xs mb-3" style={{ color: "var(--fpl-text-muted)" }}>
-        Captain:{" "}
-        <span className="font-semibold" style={{ color: "var(--fpl-text-primary)" }}>
-          {captainName}
-        </span>
+      <div className="text-xs" style={{ color: "var(--fpl-text-muted)" }}>
+        Captain
       </div>
-
-      <div className="grid grid-cols-2 gap-2 text-center mb-4">
-        <div>
-          <div className="text-xs" style={{ color: "var(--fpl-text-muted)" }}>
-            Base
-          </div>
-          <div className="text-base font-semibold" style={{ color: "var(--fpl-text-primary)" }}>
-            {side.basePoints}
-          </div>
-        </div>
-        <div>
-          <div className="text-xs" style={{ color: "var(--fpl-text-muted)" }}>
-            Left
-          </div>
-          <div className="text-base font-semibold" style={{ color: "var(--fpl-text-primary)" }}>
-            {side.playersLeftToPlay}
-          </div>
-        </div>
+      <div
+        className="text-sm font-semibold mt-1 truncate"
+        style={{ color: "var(--fpl-text-primary)" }}
+      >
+        {captainName}
+      </div>
+      <div className="h-px bg-white/5 my-3" />
+      <div className="grid grid-cols-2 text-xs mb-4">
+        <span style={{ color: "var(--fpl-text-muted)" }}>Players left</span>
+        <span
+          className={`font-semibold tabular-nums ${isRight ? "text-right" : "text-left"}`}
+          style={{ color: "var(--fpl-text-primary)" }}
+        >
+          {side.playersLeftToPlay}
+        </span>
       </div>
 
       <div className="space-y-2">
@@ -302,4 +301,21 @@ function ManagerRow({ manager, label, accentColor }: ManagerRowProps) {
       </div>
     </div>
   );
+}
+
+function getStadiumImage(
+  fixtureId: string,
+  gw: number | null,
+  images: readonly string[]
+) {
+  if (!images.length || !gw) {
+    return null;
+  }
+  const seed = `${gw}-${fixtureId}`;
+  let hash = 0;
+  for (let i = 0; i < seed.length; i += 1) {
+    hash = (hash * 31 + seed.charCodeAt(i)) % 2147483647;
+  }
+  const index = Math.abs(hash) % images.length;
+  return `/Assets/${images[index]}`;
 }

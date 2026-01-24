@@ -197,84 +197,70 @@ function FixtureCard({ matchup }: FixtureCardProps) {
         </span>
       </div>
 
-      <div className="flex items-center justify-between gap-3 mb-3">
-        <div className="flex-1 space-y-1.5">
+      <div className="flex items-start justify-between gap-3 mb-3">
+        <div className="flex-1">
           <div
-            className="px-2.5 py-1.5 rounded-md flex items-center justify-between gap-2"
+            className="px-2.5 py-2 rounded-md"
             style={{
               backgroundColor: "rgba(255, 255, 255, 0.03)",
               boxShadow: `0 0 0 1px ${teamColors.home}40`
             }}
           >
-            <div className="flex items-center gap-1.5 min-w-0">
+            <div className="flex items-center gap-1.5">
               <Crown size={10} style={{ color: teamColors.home, flexShrink: 0 }} />
-              <span
-                className="text-xs font-medium truncate"
-                style={{ color: "var(--fpl-text-primary)" }}
-              >
+              <span className="text-xs font-medium" style={{ color: "var(--fpl-text-primary)" }}>
                 Captain
               </span>
             </div>
-            <span
-              className="text-[11px] font-semibold truncate"
-              style={{ color: teamColors.home, flexShrink: 0 }}
+            <div
+              className="text-[11px] font-semibold mt-1 truncate"
+              style={{ color: teamColors.home }}
             >
               {getCaptainLabel(matchup.home.managers)}
-            </span>
-          </div>
-          <div
-            className="px-2.5 py-1.5 rounded-md flex items-center justify-between gap-2"
-            style={{ backgroundColor: "rgba(255, 255, 255, 0.02)" }}
-          >
-            <span className="text-xs font-medium" style={{ color: "var(--fpl-text-muted)" }}>
-              Players left
-            </span>
-            <span
-              className="text-xs font-semibold tabular-nums"
-              style={{ color: "var(--fpl-text-primary)", flexShrink: 0 }}
-            >
-              {matchup.home.playersLeftToPlay}
-            </span>
+            </div>
+            <div className="h-px bg-white/5 my-2" />
+            <div className="grid grid-cols-2 text-xs">
+              <span style={{ color: "var(--fpl-text-muted)" }}>Players left</span>
+              <span
+                className="font-semibold tabular-nums text-left"
+                style={{ color: "var(--fpl-text-primary)" }}
+              >
+                {matchup.home.playersLeftToPlay}
+              </span>
+            </div>
           </div>
         </div>
 
-        <div className="flex-1 space-y-1.5">
+        <div className="flex-1 text-right">
           <div
-            className="px-2.5 py-1.5 rounded-md flex items-center justify-between gap-2"
+            className="px-2.5 py-2 rounded-md"
             style={{
               backgroundColor: "rgba(255, 255, 255, 0.03)",
               boxShadow: `0 0 0 1px ${teamColors.away}40`
             }}
           >
-            <div className="flex items-center gap-1.5 min-w-0">
+            <div className="flex items-center gap-1.5 justify-end">
               <Crown size={10} style={{ color: teamColors.away, flexShrink: 0 }} />
-              <span
-                className="text-xs font-medium truncate"
-                style={{ color: "var(--fpl-text-primary)" }}
-              >
+              <span className="text-xs font-medium" style={{ color: "var(--fpl-text-primary)" }}>
                 Captain
               </span>
             </div>
-            <span
-              className="text-[11px] font-semibold truncate"
-              style={{ color: teamColors.away, flexShrink: 0 }}
+            <div
+              className="text-[11px] font-semibold mt-1 truncate"
+              style={{ color: teamColors.away }}
             >
               {getCaptainLabel(matchup.away.managers)}
-            </span>
-          </div>
-          <div
-            className="px-2.5 py-1.5 rounded-md flex items-center justify-between gap-2"
-            style={{ backgroundColor: "rgba(255, 255, 255, 0.02)" }}
-          >
-            <span className="text-xs font-medium" style={{ color: "var(--fpl-text-muted)" }}>
-              Players left
-            </span>
-            <span
-              className="text-xs font-semibold tabular-nums"
-              style={{ color: "var(--fpl-text-primary)", flexShrink: 0 }}
-            >
-              {matchup.away.playersLeftToPlay}
-            </span>
+            </div>
+            <div className="h-px bg-white/5 my-2" />
+            <div className="grid grid-cols-2 text-xs">
+              <span style={{ color: "var(--fpl-text-muted)" }}>Players left</span>
+              <span
+                className="font-semibold tabular-nums text-right"
+                style={{ color: "var(--fpl-text-primary)" }}
+              >
+                {matchup.away.playersLeftToPlay}
+              </span>
+            </div>
           </div>
         </div>
       </div>
