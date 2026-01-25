@@ -115,9 +115,10 @@ export async function GET(request: Request) {
   const matchupId = url.searchParams.get("matchupId");
 
   const bootstrap = await getBootstrapStatic();
+  const activeGw = bootstrap ? getCurrentGameweek(bootstrap) : null;
   let gw = gwParam ? Number(gwParam) : null;
   if (!gw || Number.isNaN(gw)) {
-    gw = bootstrap ? getCurrentGameweek(bootstrap) : null;
+    gw = activeGw;
   }
   if (!gw) {
     gw = 1;
@@ -125,6 +126,57 @@ export async function GET(request: Request) {
   }
 
   const gwStatus = buildGwStatus(bootstrap, gw);
+  if (activeGw && gw > activeGw) {
+    const response: LiveScoreApiResponse = {
+      gw,
+      activeGw,
+      generatedAt: new Date().toISOString(),
+      matchups: [],
+      warnings: [`Gameweek ${gw} has not started yet. Check back later.`],
+      gwStatus
+    };
+    return NextResponse.json(response, {
+      headers: {
+        "Cache-Control": CACHE_CONTROL_VALUE
+      }
+    });
+  }
+
+  if (activeGw && gw < activeGw) {
+    const cachedResults = await readResultsFile(gw);
+    if (cachedResults) {
+      const filteredMatchups = matchupId
+        ? cachedResults.matchups.filter((matchup) => matchup.id === matchupId)
+        : cachedResults.matchups;
+      return NextResponse.json(
+        {
+          ...cachedResults,
+          activeGw,
+          matchups: filteredMatchups,
+          gwStatus
+        },
+        {
+          headers: {
+            "Cache-Control": CACHE_CONTROL_VALUE
+          }
+        }
+      );
+    }
+
+    const response: LiveScoreApiResponse = {
+      gw,
+      activeGw,
+      generatedAt: new Date().toISOString(),
+      matchups: [],
+      warnings: [`Archived results for gameweek ${gw} are not available yet.`],
+      gwStatus
+    };
+    return NextResponse.json(response, {
+      headers: {
+        "Cache-Control": CACHE_CONTROL_VALUE
+      }
+    });
+  }
   if (gwStatus?.isFinished) {
     const cachedResults = await readResultsFile(gw);
     if (cachedResults) {
@@ -134,6 +186,7 @@ export async function GET(request: Request) {
       return NextResponse.json(
         {
           ...cachedResults,
+          activeGw,
           matchups: filteredMatchups,
           gwStatus
         },
@@ -311,6 +364,7 @@ export async function GET(request: Request) {
 
   const response: LiveScoreApiResponse = {
     gw,
+    activeGw,
     generatedAt: new Date().toISOString(),
     matchups: matchupResponses,
     warnings,

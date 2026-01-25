@@ -51,24 +51,28 @@ export function FixturesOverview({
               Live Matches
             </h1>
             <div className="flex items-center gap-2">
-              <span
-                className="text-sm tracking-wide"
-                style={{ color: "var(--fpl-text-muted)" }}
-              >
-                Gameweek
-              </span>
-              <select
-                value={selectedGameweek}
-                onChange={(event) => onSelectGameweek(Number(event.target.value))}
-                className="text-sm bg-transparent border border-white/10 rounded-md px-2 py-1"
-                style={{ color: "var(--fpl-text-primary)" }}
-              >
-                {availableGameweeks.map((gw) => (
-                  <option key={gw} value={gw}>
-                    {gw}
-                  </option>
-                ))}
-              </select>
+              <div className="relative inline-flex items-center">
+                <span
+                  className="text-sm tracking-wide"
+                  style={{ color: "var(--fpl-text-muted)" }}
+                >
+                  Gameweek {selectedGameweek}
+                </span>
+                <span className="ml-1 text-xs" style={{ color: "var(--fpl-text-muted)" }}>
+                  ▾
+                </span>
+                <select
+                  value={selectedGameweek}
+                  onChange={(event) => onSelectGameweek(Number(event.target.value))}
+                  className="absolute inset-0 opacity-0 cursor-pointer"
+                >
+                  {availableGameweeks.map((gw) => (
+                    <option key={gw} value={gw}>
+                      {gw}
+                    </option>
+                  ))}
+                </select>
+              </div>
             </div>
             {updatedAt && (
               <div className="text-xs mt-1" style={{ color: "var(--fpl-text-muted)" }}>
@@ -84,7 +88,7 @@ export function FixturesOverview({
               className="text-xs px-3 py-2 rounded-lg bg-white/5"
               style={{ color: "var(--fpl-text-muted)" }}
             >
-              Gameweek {selectedGameweek} has not started yet.
+              Gameweek {selectedGameweek} has not started yet. Check back later.
             </div>
           </div>
         )}

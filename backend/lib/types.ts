@@ -85,6 +85,7 @@ export type TeamsFile = {
 
 export type LiveScoreApiResponse = {
   gw: number;
+  activeGw: number | null;
   generatedAt: string;
   matchups: MatchupResponse[];
   warnings: string[];

@@ -13,16 +13,17 @@ export default function HomePage() {
   const gameweek = data?.gw ?? 0;
   const warnings = dismissedWarning ? [] : data?.warnings ?? [];
   const gwStatus = data?.gwStatus ?? null;
+  const activeGw = data?.activeGw ?? null;
 
   useEffect(() => {
     setDismissedWarning(false);
   }, [data?.warnings?.join("|")]);
 
   useEffect(() => {
-    if (selectedGameweek === null && data?.gw) {
-      setSelectedGameweek(data.gw);
+    if (selectedGameweek === null && activeGw) {
+      setSelectedGameweek(activeGw);
     }
-  }, [data?.gw, selectedGameweek]);
+  }, [activeGw, selectedGameweek]);
 
   const availableGameweeks = useMemo(() => {
     const weeks: number[] = [];
