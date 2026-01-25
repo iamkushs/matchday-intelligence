@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import matchupsData from "../../../data/matchups.json";
 import captainsData from "../../../data/captains.json";
 import teamsData from "../../../data/teams.json";
+import path from "path";
+import { promises as fs } from "fs";
 import {
   buildElementToTeamMap,
   buildElementPointsMap,
@@ -15,6 +17,7 @@ import {
 import type {
   CaptainsFile,
   EntryEventPicks,
+  GameweekStatus,
   LiveScoreApiResponse,
   ManagerStats,
   MatchupConfig,
@@ -64,6 +67,47 @@ function getGwPointsFromPicks(picksData: EntryEventPicks | null) {
   return typeof points === "number" ? points : 0;
 }
 
+async function readResultsFile(gw: number) {
+  try {
+    const fullPath = path.join(process.cwd(), "data", "results", `gw-${gw}.json`);
+    const data = await fs.readFile(fullPath, "utf8");
+    return JSON.parse(data) as LiveScoreApiResponse;
+  } catch {
+    return null;
+  }
+}
+
+async function writeResultsFile(gw: number, payload: LiveScoreApiResponse) {
+  try {
+    const dirPath = path.join(process.cwd(), "data", "results");
+    await fs.mkdir(dirPath, { recursive: true });
+    const fullPath = path.join(dirPath, `gw-${gw}.json`);
+    await fs.writeFile(fullPath, JSON.stringify(payload, null, 2), "utf8");
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+function buildGwStatus(bootstrap: any, gw: number): GameweekStatus | null {
+  const events = bootstrap?.events;
+  if (!Array.isArray(events)) {
+    return null;
+  }
+  const event = events.find((item: any) => item?.id === gw);
+  if (!event) {
+    return null;
+  }
+  return {
+    id: gw,
+    name: event?.name,
+    isCurrent: Boolean(event?.is_current),
+    isNext: Boolean(event?.is_next),
+    isFinished: Boolean(event?.finished),
+    isStarted: Boolean(event?.is_current || event?.is_previous || event?.finished)
+  };
+}
+
 export async function GET(request: Request) {
   const warnings: string[] = [];
   const url = new URL(request.url);
@@ -78,6 +122,28 @@ export async function GET(request: Request) {
   if (!gw) {
     gw = 1;
     warnings.push("Unable to detect current gameweek, defaulted to 1.");
+  }
+
+  const gwStatus = buildGwStatus(bootstrap, gw);
+  if (gwStatus?.isFinished) {
+    const cachedResults = await readResultsFile(gw);
+    if (cachedResults) {
+      const filteredMatchups = matchupId
+        ? cachedResults.matchups.filter((matchup) => matchup.id === matchupId)
+        : cachedResults.matchups;
+      return NextResponse.json(
+        {
+          ...cachedResults,
+          matchups: filteredMatchups,
+          gwStatus
+        },
+        {
+          headers: {
+            "Cache-Control": CACHE_CONTROL_VALUE
+          }
+        }
+      );
+    }
   }
 
   const matchupsFile = matchupsData as MatchupsFile;
@@ -247,8 +313,19 @@ export async function GET(request: Request) {
     gw,
     generatedAt: new Date().toISOString(),
     matchups: matchupResponses,
-    warnings
+    warnings,
+    gwStatus
   };
+
+  if (gwStatus?.isFinished) {
+    const wrote = await writeResultsFile(gw, response);
+    if (!wrote) {
+      response.warnings = [
+        ...response.warnings,
+        "Unable to persist finished gameweek results in this environment."
+      ];
+    }
+  }
 
   return NextResponse.json(response, {
     headers: {

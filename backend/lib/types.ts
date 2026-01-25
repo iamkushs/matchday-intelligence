@@ -88,6 +88,16 @@ export type LiveScoreApiResponse = {
   generatedAt: string;
   matchups: MatchupResponse[];
   warnings: string[];
+  gwStatus: GameweekStatus | null;
+};
+
+export type GameweekStatus = {
+  id: number;
+  name?: string;
+  isCurrent: boolean;
+  isNext: boolean;
+  isFinished: boolean;
+  isStarted: boolean;
 };
 
 export type ElementToTeamMap = Map<number, number>;

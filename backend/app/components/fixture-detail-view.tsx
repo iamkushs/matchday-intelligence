@@ -1,12 +1,13 @@
 import Link from "next/link";
 import { ArrowLeft, Crown } from "lucide-react";
-import type { MatchupResponse } from "../../lib/types";
+import type { GameweekStatus, MatchupResponse } from "../../lib/types";
 import { stadiumImages } from "../../lib/stadiumImages";
 import { Skeleton } from "./ui/skeleton";
 
 type FixtureDetailViewProps = {
   fixture: MatchupResponse | null;
   gw: number | null;
+  gwStatus: GameweekStatus | null;
   updatedAt: string | null;
   isLoading: boolean;
   banner?: React.ReactNode;
@@ -20,6 +21,7 @@ const teamColors = {
 export function FixtureDetailView({
   fixture,
   gw,
+  gwStatus,
   updatedAt,
   isLoading,
   banner
@@ -59,6 +61,7 @@ export function FixtureDetailView({
   const leader =
     pointsDiff > 0 ? fixture.home.name : pointsDiff < 0 ? fixture.away.name : "Tie";
   const stadiumImage = getStadiumImage(fixture.id, gw, stadiumImages);
+  const isFinished = gwStatus?.isFinished ?? false;
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: "var(--fpl-bg-deep)" }}>
@@ -151,10 +154,15 @@ export function FixtureDetailView({
 
           <div className="text-center">
             <p className="text-sm" style={{ color: "var(--fpl-text-muted)" }}>
-              {leader} {pointsDiff === 0 ? "level" : "leads"}{" "}
+              {leader}{" "}
+              {pointsDiff === 0
+                ? "level"
+                : isFinished
+                  ? "won"
+                  : "leads"}{" "}
               {pointsDiff !== 0 && (
                 <>
-                  by{" "}
+                  {isFinished ? "by" : "by"}{" "}
                   <span
                     className="font-semibold"
                     style={{

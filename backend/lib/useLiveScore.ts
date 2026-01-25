@@ -10,7 +10,7 @@ type LiveScoreState = {
 
 export function useLiveScore(
   pollIntervalMs = 20000,
-  gwOverride?: number
+  gwOverride?: number | null
 ): LiveScoreState {
   const [data, setData] = useState<LiveScoreApiResponse | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -19,7 +19,10 @@ export function useLiveScore(
 
   const fetchLiveScore = useCallback(async () => {
     try {
-      const url = gwOverride ? `/api/live-score?gw=${gwOverride}` : "/api/live-score";
+      const url =
+        typeof gwOverride === "number"
+          ? `/api/live-score?gw=${gwOverride}`
+          : "/api/live-score";
       const response = await fetch(url, { cache: "no-store" });
       if (!response.ok) {
         throw new Error(`Request failed (${response.status})`);

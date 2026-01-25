@@ -8,7 +8,12 @@ import { useLiveScore } from "../../../lib/useLiveScore";
 export default function FixtureDetailPage() {
   const params = useParams();
   const fixtureId = typeof params?.id === "string" ? params.id : "";
-  const { data, isLoading, error } = useLiveScore(20000, 23);
+  const gwFromId = useMemo(() => {
+    const match = fixtureId.match(/^gw(\d+)-/i);
+    return match ? Number(match[1]) : null;
+  }, [fixtureId]);
+
+  const { data, isLoading, error } = useLiveScore(20000, gwFromId);
   const [dismissedWarning, setDismissedWarning] = useState(false);
 
   useEffect(() => {
@@ -62,6 +67,7 @@ export default function FixtureDetailPage() {
     <FixtureDetailView
       fixture={fixture}
       gw={data?.gw ?? null}
+      gwStatus={data?.gwStatus ?? null}
       updatedAt={updatedAt}
       isLoading={isLoading}
       banner={banner}

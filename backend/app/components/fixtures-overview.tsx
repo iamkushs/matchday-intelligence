@@ -1,18 +1,20 @@
 import Link from "next/link";
-import { Crown, Filter } from "lucide-react";
-import type { MatchupResponse } from "../../lib/types";
+import { Crown } from "lucide-react";
+import type { GameweekStatus, MatchupResponse } from "../../lib/types";
 import { Skeleton } from "./ui/skeleton";
 
 type FixturesOverviewProps = {
   matchups: MatchupResponse[];
   gameweek: number;
+  selectedGameweek: number;
+  availableGameweeks: number[];
+  gwStatus: GameweekStatus | null;
   updatedAt: string | null;
   isLoading: boolean;
   error: string | null;
   warnings: string[];
   onDismissWarnings?: () => void;
-  filterMode: "all" | "live";
-  onToggleFilter: () => void;
+  onSelectGameweek: (gw: number) => void;
 };
 
 const teamColors = {
@@ -23,16 +25,19 @@ const teamColors = {
 export function FixturesOverview({
   matchups,
   gameweek,
+  selectedGameweek,
+  availableGameweeks,
+  gwStatus,
   updatedAt,
   isLoading,
   error,
   warnings,
   onDismissWarnings,
-  filterMode,
-  onToggleFilter
+  onSelectGameweek
 }: FixturesOverviewProps) {
-  const liveMatches = matchups.length;
   const visibleMatchups = matchups;
+  const isFinished = gwStatus?.isFinished ?? false;
+  const isNotStarted = gwStatus ? !gwStatus.isStarted && !gwStatus.isFinished : false;
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: "var(--fpl-bg-deep)" }}>
@@ -45,21 +50,25 @@ export function FixturesOverview({
             >
               Live Matches
             </h1>
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2">
               <span
                 className="text-sm tracking-wide"
                 style={{ color: "var(--fpl-text-muted)" }}
               >
-                Gameweek {gameweek}
+                Gameweek
               </span>
-              {liveMatches > 0 && (
-                <div className="flex items-center gap-1.5">
-                  <div className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
-                  <span className="text-xs" style={{ color: "var(--fpl-text-muted)" }}>
-                    {liveMatches} live
-                  </span>
-                </div>
-              )}
+              <select
+                value={selectedGameweek}
+                onChange={(event) => onSelectGameweek(Number(event.target.value))}
+                className="text-sm bg-transparent border border-white/10 rounded-md px-2 py-1"
+                style={{ color: "var(--fpl-text-primary)" }}
+              >
+                {availableGameweeks.map((gw) => (
+                  <option key={gw} value={gw}>
+                    {gw}
+                  </option>
+                ))}
+              </select>
             </div>
             {updatedAt && (
               <div className="text-xs mt-1" style={{ color: "var(--fpl-text-muted)" }}>
@@ -67,18 +76,18 @@ export function FixturesOverview({
               </div>
             )}
           </div>
-          <button
-            className="p-2.5 rounded-lg transition-colors hover:bg-white/5 flex items-center gap-2"
-            style={{ color: "var(--fpl-text-muted)" }}
-            type="button"
-            onClick={onToggleFilter}
-          >
-            <Filter size={20} />
-            <span className="text-xs uppercase tracking-wide">
-              {filterMode === "live" ? "Live" : "All"}
-            </span>
-          </button>
         </header>
+
+        {isNotStarted && (
+          <div className="px-5 pb-2">
+            <div
+              className="text-xs px-3 py-2 rounded-lg bg-white/5"
+              style={{ color: "var(--fpl-text-muted)" }}
+            >
+              Gameweek {selectedGameweek} has not started yet.
+            </div>
+          </div>
+        )}
 
         {error && (
           <div className="px-5 pb-2">
@@ -118,7 +127,7 @@ export function FixturesOverview({
                 <Skeleton key={index} className="h-32 rounded-xl bg-white/5" />
               ))
             : visibleMatchups.map((matchup) => (
-                <FixtureCard key={matchup.id} matchup={matchup} />
+                <FixtureCard key={matchup.id} matchup={matchup} isFinished={isFinished} />
               ))}
         </div>
       </div>
@@ -128,11 +137,12 @@ export function FixturesOverview({
 
 type FixtureCardProps = {
   matchup: MatchupResponse;
+  isFinished: boolean;
 };
 
-function FixtureCard({ matchup }: FixtureCardProps) {
+function FixtureCard({ matchup, isFinished }: FixtureCardProps) {
   const pointsDiff = matchup.home.totalPoints - matchup.away.totalPoints;
-  const isLive = true;
+  const isLive = !isFinished;
 
   return (
     <Link
@@ -152,13 +162,21 @@ function FixtureCard({ matchup }: FixtureCardProps) {
             {matchup.home.name}
           </h3>
         </div>
-        {isLive && (
-          <div className="px-2 py-0.5 rounded-md bg-red-500/10 border border-red-500/30 mx-3">
-            <span className="text-red-400 text-[9px] font-semibold tracking-wide uppercase">
-              LIVE
-            </span>
-          </div>
-        )}
+        <div
+          className={`px-2 py-0.5 rounded-md mx-3 ${
+            isLive
+              ? "bg-red-500/10 border border-red-500/30"
+              : "bg-white/5 border border-white/10"
+          }`}
+        >
+          <span
+            className={`text-[9px] font-semibold tracking-wide uppercase ${
+              isLive ? "text-red-400" : "text-[var(--fpl-text-muted)]"
+            }`}
+          >
+            {isLive ? "LIVE" : "FINISHED"}
+          </span>
+        </div>
         <div className="flex-1 text-right">
           <h3
             className="text-base font-semibold tracking-tight"
