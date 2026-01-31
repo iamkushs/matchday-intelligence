@@ -86,10 +86,10 @@ export async function GET(request: Request) {
 
   const bootstrap = await getBootstrapStatic();
   const activeGw = bootstrap ? getCurrentGameweek(bootstrap) : null;
-  let gw = gwParam ? Number(gwParam) : null;
-  if (!gw || Number.isNaN(gw)) {
-    gw = activeGw ?? 23;
-  }
+  const parsedGw = gwParam ? Number(gwParam) : NaN;
+  const gw = !Number.isNaN(parsedGw)
+    ? parsedGw
+    : activeGw ?? 23;
 
   const groupA = await loadBaselineStandings("standings_group_a.json");
   const groupB = await loadBaselineStandings("standings_group_b.json");
