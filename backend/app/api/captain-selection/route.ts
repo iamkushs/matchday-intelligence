@@ -72,13 +72,17 @@ export async function POST(request: Request) {
     );
   }
 
-  const { error } = await supabase.from("captain_selections").insert({
-    gw: payload.gw,
-    matchup_id: payload.matchupId,
-    side: payload.side,
-    captain_entry_id: payload.captainEntryId ?? null,
-    status: payload.status
-  });
+  const { error } = await (supabase as any)
+    .from("captain_selections")
+    .insert([
+      {
+        gw: payload.gw,
+        matchup_id: payload.matchupId,
+        side: payload.side,
+        captain_entry_id: payload.captainEntryId ?? null,
+        status: payload.status
+      }
+    ]);
 
   if (error) {
     return NextResponse.json(
