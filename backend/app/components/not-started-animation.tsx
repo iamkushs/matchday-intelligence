@@ -11,7 +11,9 @@ export function NotStartedAnimation({ className }: NotStartedAnimationProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
-    let animation: { destroy?: () => void } | null = null;
+    let animation:
+      | { destroy?: () => void; setSpeed?: (speed: number) => void }
+      | null = null;
     let isMounted = true;
 
     async function loadAnimation() {

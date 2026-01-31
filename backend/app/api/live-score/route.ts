@@ -153,7 +153,7 @@ async function fetchCaptainSelections(
 async function readResults(gw: number, warnings: string[]) {
   const supabase = getSupabaseAdmin();
   if (supabase) {
-    const { data, error } = await supabase
+    const { data, error } = await (supabase as any)
       .from("gw_results")
       .select("payload")
       .eq("gw", gw)
@@ -174,11 +174,13 @@ async function writeResults(
 ) {
   const supabase = getSupabaseAdmin();
   if (supabase) {
-    const { error } = await supabase.from("gw_results").upsert({
-      gw,
-      payload,
-      updated_at: new Date().toISOString()
-    });
+    const { error } = await (supabase as any).from("gw_results").upsert([
+      {
+        gw,
+        payload,
+        updated_at: new Date().toISOString()
+      }
+    ]);
     if (!error) {
       return true;
     }
