@@ -142,7 +142,7 @@ export function StandingsView({
               <TableHeader>
                 <TableRow
                   className="text-[11px] uppercase tracking-wider"
-                  style={{ color: "var(--fpl-text-muted)" }}
+                  style={{ color: "var(--fpl-text-primary)" }}
                 >
                   <TableHead className="px-3 py-2 text-left">Rank</TableHead>
                   <TableHead className="px-3 py-2 text-left">Team</TableHead>

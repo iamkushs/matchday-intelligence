@@ -1,2 +1,12 @@
 @import "./styles/tailwind.css";
 @import "./styles/theme.css";
+
+html,
+body {
+  min-height: 100%;
+  background-color: var(--fpl-bg-deep);
+}
+
+body {
+  overflow-x: hidden;
+}
