@@ -19,7 +19,7 @@ const fixturesCache = new Map<number, CacheEntry<any>>();
 const liveEventCache = new Map<number, CacheEntry<any>>();
 const picksCache = new Map<string, CacheEntry<EntryEventPicks>>();
 
-const BOOTSTRAP_TTL_MS = 12 * 60 * 60 * 1000;
+const BOOTSTRAP_TTL_MS = 5 * 60 * 1000;
 const FIXTURES_TTL_MS = 30 * 1000;
 const LIVE_EVENT_TTL_MS = 10 * 1000;
 const PICKS_TTL_MS = 10 * 1000;
@@ -86,12 +86,21 @@ export function getCurrentGameweek(bootstrapData: any) {
     return null;
   }
 
+  const now = Date.now();
+  const leadMs = 12 * 60 * 60 * 1000;
+  const next = events.find((event: any) => event?.is_next);
+  if (next?.id && typeof next?.deadline_time === "string") {
+    const deadline = Date.parse(next.deadline_time);
+    if (!Number.isNaN(deadline) && now >= deadline - leadMs) {
+      return next.id as number;
+    }
+  }
+
   const current = events.find((event: any) => event?.is_current);
   if (current?.id) {
     return current.id as number;
   }
 
-  const next = events.find((event: any) => event?.is_next);
   if (next?.id) {
     return next.id as number;
   }
