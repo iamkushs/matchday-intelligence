@@ -13,7 +13,7 @@ export default function FixtureDetailPage() {
     return match ? Number(match[1]) : null;
   }, [fixtureId]);
 
-  const { data, isLoading, error } = useLiveScore(20000, gwFromId);
+  const { data, isLoading, error, refreshNow } = useLiveScore(20000, gwFromId);
   const [dismissedWarning, setDismissedWarning] = useState(false);
 
   useEffect(() => {
@@ -35,6 +35,10 @@ export default function FixtureDetailPage() {
   }, [data?.generatedAt]);
 
   const warnings = dismissedWarning ? [] : data?.warnings ?? [];
+  const allowCaptainSelection =
+    !!data?.activeGw &&
+    data.activeGw === data.gw &&
+    !(data?.gwStatus?.isFinished ?? false);
 
   const banner =
     error || warnings.length > 0 ? (
@@ -71,6 +75,8 @@ export default function FixtureDetailPage() {
       updatedAt={updatedAt}
       isLoading={isLoading}
       banner={banner}
+      allowCaptainSelection={allowCaptainSelection}
+      onRefresh={refreshNow}
     />
   );
 }

@@ -4,6 +4,7 @@ import captainsData from "../../../data/captains.json";
 import teamsData from "../../../data/teams.json";
 import path from "path";
 import { promises as fs } from "fs";
+import { getSupabaseAdmin } from "../../../lib/supabase";
 import {
   buildElementToTeamMap,
   buildElementPointsMap,
@@ -22,6 +23,8 @@ import type {
   ManagerStats,
   MatchupConfig,
   MatchupsFile,
+  MatchupResponse,
+  CaptainSelectionRow,
   TeamsFile
 } from "../../../lib/types";
 import { computeMatchupTotals } from "../../../lib/scoring";
@@ -43,22 +46,42 @@ function getUniqueEntryIds(matchups: MatchupConfig[]) {
 
 function resolveCaptainConfig(
   captains: CaptainsFile | null,
+  selections: CaptainSelectionMap,
   gw: number,
-  matchupId: string,
-  warnings: string[]
+  matchupId: string
 ) {
   const gwKey = String(gw);
   const override = captains?.byGameweek?.[gwKey]?.[matchupId];
   const fallback = captains?.default?.[matchupId];
   const config = override ?? fallback ?? null;
-  if (!config) {
-    warnings.push(
-      `Missing captain config for matchup=${matchupId} (gw=${gw}), bonus set to 0.`
-    );
-  }
+
+  const homeSelection = selections.get(getSelectionKey(matchupId, "home"));
+  const awaySelection = selections.get(getSelectionKey(matchupId, "away"));
+
+  const resolveSide = (
+    selection: CaptainSelectionRow | undefined,
+    configCaptain: number | null | undefined
+  ) => {
+    if (selection) {
+      return {
+        captainEntryId: selection.captain_entry_id ?? null,
+        status: selection.status
+      };
+    }
+    if (typeof configCaptain === "number") {
+      return { captainEntryId: configCaptain, status: "selected" as const };
+    }
+    return { captainEntryId: null, status: "pending" as const };
+  };
+
+  const home = resolveSide(homeSelection, config?.homeCaptain);
+  const away = resolveSide(awaySelection, config?.awayCaptain);
+
   return {
-    homeCaptain: config?.homeCaptain ?? null,
-    awayCaptain: config?.awayCaptain ?? null
+    homeCaptain: home.captainEntryId,
+    awayCaptain: away.captainEntryId,
+    homeStatus: home.status,
+    awayStatus: away.status
   };
 }
 
@@ -89,6 +112,81 @@ async function writeResultsFile(gw: number, payload: LiveScoreApiResponse) {
   }
 }
 
+type CaptainSelectionMap = Map<string, CaptainSelectionRow>;
+
+function getSelectionKey(matchupId: string, side: "home" | "away") {
+  return `${matchupId}:${side}`;
+}
+
+async function fetchCaptainSelections(
+  gw: number,
+  warnings: string[]
+): Promise<CaptainSelectionMap> {
+  const selections: CaptainSelectionMap = new Map();
+  const supabase = getSupabaseAdmin();
+  if (!supabase) {
+    return selections;
+  }
+  const { data, error } = await supabase
+    .from("captain_selections")
+    .select("gw,matchup_id,side,captain_entry_id,status")
+    .eq("gw", gw);
+  if (error) {
+    warnings.push("Unable to load captain selections from storage.");
+    return selections;
+  }
+  for (const row of data ?? []) {
+    if (!row?.matchup_id || (row.side !== "home" && row.side !== "away")) {
+      continue;
+    }
+    selections.set(getSelectionKey(row.matchup_id, row.side), {
+      gw: row.gw,
+      matchup_id: row.matchup_id,
+      side: row.side,
+      captain_entry_id: row.captain_entry_id ?? null,
+      status: row.status
+    });
+  }
+  return selections;
+}
+
+async function readResults(gw: number, warnings: string[]) {
+  const supabase = getSupabaseAdmin();
+  if (supabase) {
+    const { data, error } = await supabase
+      .from("gw_results")
+      .select("payload")
+      .eq("gw", gw)
+      .maybeSingle();
+    if (error) {
+      warnings.push("Unable to load archived results from storage.");
+    } else if (data?.payload) {
+      return data.payload as LiveScoreApiResponse;
+    }
+  }
+  return readResultsFile(gw);
+}
+
+async function writeResults(
+  gw: number,
+  payload: LiveScoreApiResponse,
+  warnings: string[]
+) {
+  const supabase = getSupabaseAdmin();
+  if (supabase) {
+    const { error } = await supabase.from("gw_results").upsert({
+      gw,
+      payload,
+      updated_at: new Date().toISOString()
+    });
+    if (!error) {
+      return true;
+    }
+    warnings.push("Unable to persist finished gameweek results in storage.");
+  }
+  return writeResultsFile(gw, payload);
+}
+
 function buildGwStatus(bootstrap: any, gw: number): GameweekStatus | null {
   const events = bootstrap?.events;
   if (!Array.isArray(events)) {
@@ -106,6 +204,40 @@ function buildGwStatus(bootstrap: any, gw: number): GameweekStatus | null {
     isFinished: Boolean(event?.finished),
     isStarted: Boolean(event?.is_current || event?.is_previous || event?.finished)
   };
+}
+
+function applyFallbackCaptains(payload: LiveScoreApiResponse) {
+  payload.matchups = payload.matchups.map((matchup) => {
+    const normalizeSide = (side: MatchupResponse["home"]) => {
+      if (side.captainEntryId || side.captainStatus !== "pending") {
+        return side;
+      }
+      if (!side.managers.length) {
+        return side;
+      }
+      const fallbackCaptain = side.managers.reduce((best, current) =>
+        current.gwPoints < best.gwPoints ? current : best
+      );
+      const updatedManagers = side.managers.map((manager) => ({
+        ...manager,
+        isCaptain: manager.entryId === fallbackCaptain.entryId
+      }));
+      return {
+        ...side,
+        captainEntryId: fallbackCaptain.entryId,
+        captainBonus: fallbackCaptain.gwPoints,
+        totalPoints: side.basePoints + fallbackCaptain.gwPoints,
+        managers: updatedManagers
+      };
+    };
+
+    return {
+      ...matchup,
+      home: normalizeSide(matchup.home),
+      away: normalizeSide(matchup.away)
+    };
+  });
+  return payload;
 }
 
 export async function GET(request: Request) {
@@ -143,14 +275,15 @@ export async function GET(request: Request) {
   }
 
   if (activeGw && gw < activeGw) {
-    const cachedResults = await readResultsFile(gw);
+    const cachedResults = await readResults(gw, warnings);
     if (cachedResults) {
+      const normalized = applyFallbackCaptains(cachedResults);
       const filteredMatchups = matchupId
-        ? cachedResults.matchups.filter((matchup) => matchup.id === matchupId)
-        : cachedResults.matchups;
+        ? normalized.matchups.filter((matchup) => matchup.id === matchupId)
+        : normalized.matchups;
       return NextResponse.json(
         {
-          ...cachedResults,
+          ...normalized,
           activeGw,
           matchups: filteredMatchups,
           gwStatus
@@ -178,14 +311,15 @@ export async function GET(request: Request) {
     });
   }
   if (gwStatus?.isFinished) {
-    const cachedResults = await readResultsFile(gw);
+    const cachedResults = await readResults(gw, warnings);
     if (cachedResults) {
+      const normalized = applyFallbackCaptains(cachedResults);
       const filteredMatchups = matchupId
-        ? cachedResults.matchups.filter((matchup) => matchup.id === matchupId)
-        : cachedResults.matchups;
+        ? normalized.matchups.filter((matchup) => matchup.id === matchupId)
+        : normalized.matchups;
       return NextResponse.json(
         {
-          ...cachedResults,
+          ...normalized,
           activeGw,
           matchups: filteredMatchups,
           gwStatus
@@ -202,6 +336,7 @@ export async function GET(request: Request) {
   const matchupsFile = matchupsData as MatchupsFile;
   const captainsFile = captainsData as CaptainsFile;
   const teamsFile = teamsData as TeamsFile;
+  const captainSelections = await fetchCaptainSelections(gw, warnings);
 
   const gwKey = String(gw);
   let allMatchups =
@@ -358,7 +493,12 @@ export async function GET(request: Request) {
   }
 
   const matchupResponses = filteredMatchups.map((matchup) => {
-    const captainConfig = resolveCaptainConfig(captainsFile, gw, matchup.id, warnings);
+    const captainConfig = resolveCaptainConfig(
+      captainsFile,
+      captainSelections,
+      gw,
+      matchup.id
+    );
     return computeMatchupTotals(matchup, captainConfig, managerStats, managerMeta, warnings);
   });
 
@@ -372,11 +512,11 @@ export async function GET(request: Request) {
   };
 
   if (gwStatus?.isFinished) {
-    const wrote = await writeResultsFile(gw, response);
+    const wrote = await writeResults(gw, response, warnings);
     if (!wrote) {
       response.warnings = [
         ...response.warnings,
-        "Unable to persist finished gameweek results in this environment."
+        "Unable to persist finished gameweek results."
       ];
     }
   }

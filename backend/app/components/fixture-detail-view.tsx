@@ -1,5 +1,8 @@
+"use client";
+
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { ArrowLeft, Crown } from "lucide-react";
+import { ArrowLeft, Crown, Info } from "lucide-react";
 import type { GameweekStatus, MatchupResponse } from "../../lib/types";
 import { stadiumImages } from "../../lib/stadiumImages";
 import { Skeleton } from "./ui/skeleton";
@@ -11,6 +14,8 @@ type FixtureDetailViewProps = {
   updatedAt: string | null;
   isLoading: boolean;
   banner?: React.ReactNode;
+  allowCaptainSelection?: boolean;
+  onRefresh?: () => void;
 };
 
 const teamColors = {
@@ -24,7 +29,9 @@ export function FixtureDetailView({
   gwStatus,
   updatedAt,
   isLoading,
-  banner
+  banner,
+  allowCaptainSelection = false,
+  onRefresh
 }: FixtureDetailViewProps) {
   if (isLoading && !fixture) {
     return (
@@ -62,6 +69,23 @@ export function FixtureDetailView({
     pointsDiff > 0 ? fixture.home.name : pointsDiff < 0 ? fixture.away.name : "Tie";
   const stadiumImage = getStadiumImage(fixture.id, gw, stadiumImages);
   const isFinished = gwStatus?.isFinished ?? false;
+  const [activeModalSide, setActiveModalSide] = useState<"home" | "away" | null>(
+    null
+  );
+  const allowSelection = allowCaptainSelection && !isFinished;
+  const pendingNotices = useMemo(() => {
+    if (!allowSelection) {
+      return [];
+    }
+    const notices: Array<{ side: "home" | "away"; name: string }> = [];
+    if (fixture.home.captainStatus === "pending") {
+      notices.push({ side: "home", name: fixture.home.name });
+    }
+    if (fixture.away.captainStatus === "pending") {
+      notices.push({ side: "away", name: fixture.away.name });
+    }
+    return notices;
+  }, [allowSelection, fixture]);
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: "var(--fpl-bg-deep)" }}>
@@ -177,6 +201,30 @@ export function FixtureDetailView({
           </div>
         </section>
 
+        {pendingNotices.length > 0 && (
+          <div className="px-5 pb-2 space-y-2">
+            {pendingNotices.map((notice) => (
+              <div
+                key={notice.side}
+                className="text-xs px-3 py-2 rounded-lg bg-white/5 flex items-center justify-between gap-3"
+                style={{ color: "var(--fpl-text-muted)" }}
+              >
+                <span className="flex-1 min-w-0">
+                  Captain not available for {notice.name}.
+                </span>
+                <button
+                  type="button"
+                  className="text-[10px] uppercase tracking-wide"
+                  style={{ color: "var(--fpl-text-primary)" }}
+                  onClick={() => setActiveModalSide(notice.side)}
+                >
+                  Select captain
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
+
         <div className="px-5">
           <div className="h-px bg-white/5 mb-6" />
         </div>
@@ -205,6 +253,18 @@ export function FixtureDetailView({
           </div>
         </section>
       </div>
+
+      <CaptainSelectionModal
+        isOpen={Boolean(activeModalSide)}
+        side={activeModalSide}
+        fixture={fixture}
+        gw={gw}
+        onClose={() => setActiveModalSide(null)}
+        onSaved={() => {
+          setActiveModalSide(null);
+          onRefresh?.();
+        }}
+      />
     </div>
   );
 }
@@ -327,4 +387,185 @@ function getStadiumImage(
   }
   const index = Math.abs(hash) % images.length;
   return `/Assets/${images[index]}`;
+}
+
+type CaptainSelectionModalProps = {
+  isOpen: boolean;
+  side: "home" | "away" | null;
+  fixture: MatchupResponse;
+  gw: number | null;
+  onClose: () => void;
+  onSaved: () => void;
+};
+
+function CaptainSelectionModal({
+  isOpen,
+  side,
+  fixture,
+  gw,
+  onClose,
+  onSaved
+}: CaptainSelectionModalProps) {
+  const [selectedValue, setSelectedValue] = useState<string>("unannounced");
+  const [isSaving, setIsSaving] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const sideData = useMemo(() => {
+    if (!side) {
+      return null;
+    }
+    return side === "home" ? fixture.home : fixture.away;
+  }, [fixture, side]);
+
+  const managerOptions = useMemo(() => {
+    if (!sideData) {
+      return [];
+    }
+    return sideData.managers.map((manager, index) => ({
+      entryId: manager.entryId,
+      label:
+        manager.managerName ??
+        manager.fplTeamName ??
+        `Manager ${index + 1}`
+    }));
+  }, [sideData]);
+
+  useEffect(() => {
+    if (!isOpen) {
+      return;
+    }
+    const firstManager = managerOptions[0];
+    setSelectedValue(firstManager ? String(firstManager.entryId) : "unannounced");
+    setError(null);
+  }, [isOpen, managerOptions]);
+
+  if (!isOpen || !side || !gw || !sideData) {
+    return null;
+  }
+
+  const handleSave = async () => {
+    if (!gw) {
+      return;
+    }
+    setIsSaving(true);
+    setError(null);
+    const isUnannounced = selectedValue === "unannounced";
+    const payload = {
+      gw,
+      matchupId: fixture.id,
+      side,
+      status: isUnannounced ? "unannounced" : "selected",
+      captainEntryId: isUnannounced ? null : Number(selectedValue)
+    };
+    try {
+      const response = await fetch("/api/captain-selection", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+      if (!response.ok) {
+        const body = (await response.json().catch(() => null)) as { error?: string } | null;
+        throw new Error(body?.error || "Unable to save captain.");
+      }
+      onSaved();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Unable to save captain.");
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center px-5">
+      <div
+        className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+        onClick={onClose}
+      />
+      <div
+        className="relative w-full max-w-sm rounded-xl p-4"
+        style={{ backgroundColor: "var(--fpl-bg-card)" }}
+      >
+        <div className="text-sm font-semibold mb-1" style={{ color: "var(--fpl-text-primary)" }}>
+          Select captain
+        </div>
+        <div className="text-xs mb-3" style={{ color: "var(--fpl-text-muted)" }}>
+          {sideData.name}
+        </div>
+
+        <div className="space-y-2 mb-4">
+          {managerOptions.map((option) => (
+            <label
+              key={option.entryId}
+              className="flex items-center gap-3 px-3 py-2 rounded-md cursor-pointer"
+              style={{ backgroundColor: "rgba(255, 255, 255, 0.03)" }}
+            >
+              <input
+                type="radio"
+                name="captain-selection"
+                value={String(option.entryId)}
+                checked={selectedValue === String(option.entryId)}
+                onChange={() => setSelectedValue(String(option.entryId))}
+              />
+              <span className="text-sm" style={{ color: "var(--fpl-text-primary)" }}>
+                {option.label}
+              </span>
+            </label>
+          ))}
+          <label
+            className="flex items-center gap-3 px-3 py-2 rounded-md cursor-pointer"
+            style={{ backgroundColor: "rgba(255, 255, 255, 0.03)" }}
+          >
+            <input
+              type="radio"
+              name="captain-selection"
+              value="unannounced"
+              checked={selectedValue === "unannounced"}
+              onChange={() => setSelectedValue("unannounced")}
+            />
+            <span className="text-sm" style={{ color: "var(--fpl-text-primary)" }}>
+              Captain not announced
+            </span>
+          </label>
+        </div>
+
+        <div
+          className="flex items-start gap-2 text-[11px] mb-3"
+          style={{ color: "var(--fpl-text-muted)" }}
+        >
+          <Info size={14} style={{ flexShrink: 0 }} />
+          <span>
+            This is a one-time selection. Picking the wrong captain will result in
+            inaccurate data.
+          </span>
+        </div>
+
+        {error && (
+          <div className="text-[11px] mb-3" style={{ color: "var(--fpl-text-muted)" }}>
+            {error}
+          </div>
+        )}
+
+        <div className="flex items-center justify-end gap-2">
+          <button
+            type="button"
+            className="px-3 py-1.5 text-xs rounded-md"
+            style={{ color: "var(--fpl-text-muted)" }}
+            onClick={onClose}
+            disabled={isSaving}
+          >
+            Cancel
+          </button>
+          <button
+            type="button"
+            className="px-3 py-1.5 text-xs rounded-md"
+            style={{ color: "var(--fpl-text-primary)", backgroundColor: "rgba(255, 255, 255, 0.08)" }}
+            onClick={handleSave}
+            disabled={isSaving}
+          >
+            {isSaving ? "Saving..." : "Save"}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
 }

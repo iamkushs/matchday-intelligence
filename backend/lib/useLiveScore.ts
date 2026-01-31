@@ -45,7 +45,7 @@ export function useLiveScore(
         setIsLoading(false);
       }
     }
-  }, []);
+  }, [gwOverride]);
 
   useEffect(() => {
     isMounted.current = true;

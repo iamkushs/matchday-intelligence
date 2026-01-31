@@ -37,6 +37,7 @@ export type ManagerResponse = {
 export type SideResponse = {
   name: string;
   captainEntryId: number | null;
+  captainStatus: CaptainSelectionStatus;
   basePoints: number;
   captainBonus: number;
   totalPoints: number;
@@ -90,6 +91,16 @@ export type LiveScoreApiResponse = {
   matchups: MatchupResponse[];
   warnings: string[];
   gwStatus: GameweekStatus | null;
+};
+
+export type CaptainSelectionStatus = "pending" | "selected" | "unannounced";
+
+export type CaptainSelectionRow = {
+  gw: number;
+  matchup_id: string;
+  side: "home" | "away";
+  captain_entry_id: number | null;
+  status: CaptainSelectionStatus;
 };
 
 export type GameweekStatus = {

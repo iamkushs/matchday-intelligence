@@ -2,7 +2,8 @@ import type {
   ManagerResponse,
   ManagerStats,
   MatchupConfig,
-  MatchupResponse
+  MatchupResponse,
+  CaptainSelectionStatus
 } from "./types";
 
 type SideTotals = {
@@ -17,6 +18,7 @@ type SideTotals = {
 export function computeSideTotals(
   managers: number[],
   captainEntryId: number | null,
+  captainStatus: CaptainSelectionStatus,
   managerStats: Map<number, ManagerStats>,
   managerMeta: Map<number, { managerName?: string; fplTeamName?: string }>,
   warnings: string[],
@@ -54,10 +56,10 @@ export function computeSideTotals(
   }
 
   if (!resolvedCaptainId && baseManagers.length > 0) {
-    const lowest = baseManagers.reduce((min, current) =>
-      current.gwPoints < min.gwPoints ? current : min
+    const fallbackCaptain = baseManagers.reduce((best, current) =>
+      current.gwPoints < best.gwPoints ? current : best
     );
-    resolvedCaptainId = lowest.entryId;
+    resolvedCaptainId = fallbackCaptain.entryId;
   }
 
   const managerResponses: ManagerResponse[] = baseManagers.map((manager) => ({
@@ -84,7 +86,12 @@ export function computeSideTotals(
 
 export function computeMatchupTotals(
   matchup: MatchupConfig,
-  captainConfig: { homeCaptain: number | null; awayCaptain: number | null },
+  captainConfig: {
+    homeCaptain: number | null;
+    awayCaptain: number | null;
+    homeStatus: CaptainSelectionStatus;
+    awayStatus: CaptainSelectionStatus;
+  },
   managerStats: Map<number, ManagerStats>,
   managerMeta: Map<number, { managerName?: string; fplTeamName?: string }>,
   warnings: string[]
@@ -92,6 +99,7 @@ export function computeMatchupTotals(
   const homeTotals = computeSideTotals(
     matchup.home.managers,
     captainConfig.homeCaptain,
+    captainConfig.homeStatus,
     managerStats,
     managerMeta,
     warnings,
@@ -101,6 +109,7 @@ export function computeMatchupTotals(
   const awayTotals = computeSideTotals(
     matchup.away.managers,
     captainConfig.awayCaptain,
+    captainConfig.awayStatus,
     managerStats,
     managerMeta,
     warnings,
@@ -112,10 +121,12 @@ export function computeMatchupTotals(
     id: matchup.id,
     home: {
       name: matchup.home.name,
+      captainStatus: captainConfig.homeStatus,
       ...homeTotals
     },
     away: {
       name: matchup.away.name,
+      captainStatus: captainConfig.awayStatus,
       ...awayTotals
     }
   };

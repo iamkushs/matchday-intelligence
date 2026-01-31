@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Crown } from "lucide-react";
 import type { GameweekStatus, MatchupResponse } from "../../lib/types";
 import { Skeleton } from "./ui/skeleton";
+import { NotStartedAnimation } from "./not-started-animation";
 
 type FixturesOverviewProps = {
   matchups: MatchupResponse[];
@@ -83,11 +84,9 @@ export function FixturesOverview({
         </header>
 
         {isNotStarted && (
-          <div className="px-5 pb-2">
-            <div
-              className="text-xs px-3 py-2 rounded-lg bg-white/5"
-              style={{ color: "var(--fpl-text-muted)" }}
-            >
+          <div className="px-5 pb-2 text-center">
+            <NotStartedAnimation className="w-full h-44 mb-1" />
+            <div className="text-xs" style={{ color: "var(--fpl-text-muted)" }}>
               Gameweek {selectedGameweek} has not started yet. Check back later.
             </div>
           </div>
@@ -104,7 +103,7 @@ export function FixturesOverview({
           </div>
         )}
 
-        {warnings.length > 0 && (
+        {warnings.length > 0 && !isNotStarted && (
           <div className="px-5 pb-2">
             <div
               className="text-xs px-3 py-2 rounded-lg bg-white/5 flex items-center justify-between gap-3"
