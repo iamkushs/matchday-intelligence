@@ -3,9 +3,10 @@
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { ArrowLeft, Crown, Info } from "lucide-react";
-import type { GameweekStatus, MatchupResponse } from "../../lib/types";
+import type { ChallengeFixture, GameweekStatus, MatchupResponse } from "../../lib/types";
 import { stadiumImages } from "../../lib/stadiumImages";
 import { Skeleton } from "./ui/skeleton";
+import { useRankings } from "../../lib/useRankings";
 
 type FixtureDetailViewProps = {
   fixture: MatchupResponse | null;
@@ -16,6 +17,7 @@ type FixtureDetailViewProps = {
   banner?: React.ReactNode;
   allowCaptainSelection?: boolean;
   onRefresh?: () => void;
+  challengeFixtures?: ChallengeFixture[];
 };
 
 const teamColors = {
@@ -31,7 +33,8 @@ export function FixtureDetailView({
   isLoading,
   banner,
   allowCaptainSelection = false,
-  onRefresh
+  onRefresh,
+  challengeFixtures = []
 }: FixtureDetailViewProps) {
   if (isLoading && !fixture) {
     return (
@@ -69,6 +72,15 @@ export function FixtureDetailView({
     pointsDiff > 0 ? fixture.home.name : pointsDiff < 0 ? fixture.away.name : "Tie";
   const stadiumImage = getStadiumImage(fixture.id, gw, stadiumImages);
   const isFinished = gwStatus?.isFinished ?? false;
+  const showCaptains = Boolean(gwStatus?.isCurrent || gwStatus?.isFinished);
+  const challengeInfo = useMemo(() => {
+    return challengeFixtures.find(
+      (item) =>
+        item.gw === (gw ?? 0) &&
+        (item.challengerTeamName === fixture.home.name ||
+          item.challengerTeamName === fixture.away.name)
+    );
+  }, [challengeFixtures, fixture, gw]);
   const [activeModalSide, setActiveModalSide] = useState<"home" | "away" | null>(
     null
   );
@@ -118,20 +130,68 @@ export function FixtureDetailView({
         <section className="px-5 py-6">
           <div className="flex items-start justify-between mb-6">
             <div className="flex-1">
-              <h1
-                className="text-xl font-semibold tracking-tight"
-                style={{ color: "var(--fpl-text-primary)" }}
-              >
-                {fixture.home.name}
-              </h1>
+              <div className="flex items-center gap-2">
+                <h1
+                  className="text-xl font-semibold tracking-tight"
+                  style={{ color: "var(--fpl-text-primary)" }}
+                >
+                  {fixture.home.name}
+                </h1>
+                {fixture.homeChipType === "double_pointer" && (
+                  <span
+                    className="px-2 py-0.5 rounded-full text-[10px] uppercase"
+                    style={{
+                      backgroundColor: "rgba(255, 255, 255, 0.08)",
+                      color: "var(--fpl-text-primary)"
+                    }}
+                  >
+                    D
+                  </span>
+                )}
+                {fixture.homeChipType === "win_win" && (
+                  <span
+                    className="px-2 py-0.5 rounded-full text-[10px] uppercase"
+                    style={{
+                      backgroundColor: "rgba(255, 255, 255, 0.08)",
+                      color: "var(--fpl-text-primary)"
+                    }}
+                  >
+                    W
+                  </span>
+                )}
+              </div>
             </div>
             <div className="flex-1 text-right">
-              <h1
-                className="text-xl font-semibold tracking-tight"
-                style={{ color: "var(--fpl-text-primary)" }}
-              >
-                {fixture.away.name}
-              </h1>
+              <div className="flex items-center justify-end gap-2">
+                {fixture.awayChipType === "double_pointer" && (
+                  <span
+                    className="px-2 py-0.5 rounded-full text-[10px] uppercase"
+                    style={{
+                      backgroundColor: "rgba(255, 255, 255, 0.08)",
+                      color: "var(--fpl-text-primary)"
+                    }}
+                  >
+                    D
+                  </span>
+                )}
+                {fixture.awayChipType === "win_win" && (
+                  <span
+                    className="px-2 py-0.5 rounded-full text-[10px] uppercase"
+                    style={{
+                      backgroundColor: "rgba(255, 255, 255, 0.08)",
+                      color: "var(--fpl-text-primary)"
+                    }}
+                  >
+                    W
+                  </span>
+                )}
+                <h1
+                  className="text-xl font-semibold tracking-tight"
+                  style={{ color: "var(--fpl-text-primary)" }}
+                >
+                  {fixture.away.name}
+                </h1>
+              </div>
             </div>
           </div>
 
@@ -201,6 +261,27 @@ export function FixtureDetailView({
           </div>
         </section>
 
+        {challengeInfo && (
+          <div className="px-5 pb-2">
+            <div
+              className="text-xs px-3 py-2 rounded-lg"
+              style={{
+                backgroundColor: "rgba(255, 255, 255, 0.04)",
+                color: "var(--fpl-text-muted)"
+              }}
+            >
+              Challenge chip active vs {challengeInfo.opponentTeamName}. Base points
+              earned: {challengeInfo.challengerBaseLeaguePoints}.
+            </div>
+          </div>
+        )}
+
+        <CurrentStandings
+          gw={gw}
+          homeTeam={fixture.home.name}
+          awayTeam={fixture.away.name}
+        />
+
         {pendingNotices.length > 0 && (
           <div className="px-5 pb-2 space-y-2">
             {pendingNotices.map((notice) => (
@@ -243,12 +324,14 @@ export function FixtureDetailView({
               side={fixture.home}
               accentColor={teamColors.home}
               align="left"
+              showCaptains={showCaptains}
             />
             <TeamBreakdown
               label="Away"
               side={fixture.away}
               accentColor={teamColors.away}
               align="right"
+              showCaptains={showCaptains}
             />
           </div>
         </section>
@@ -269,16 +352,105 @@ export function FixtureDetailView({
   );
 }
 
+function CurrentStandings({
+  gw,
+  homeTeam,
+  awayTeam
+}: {
+  gw: number | null;
+  homeTeam: string;
+  awayTeam: string;
+}) {
+  const { data } = useRankings(gw);
+  const rows = useMemo(() => {
+    if (!data) {
+      return null;
+    }
+    const allRows = [...data.groupA, ...data.groupB];
+    const homeRow = allRows.find((row) => row.team_name === homeTeam) ?? null;
+    const awayRow = allRows.find((row) => row.team_name === awayTeam) ?? null;
+    return { homeRow, awayRow };
+  }, [data, homeTeam, awayTeam]);
+
+  if (!rows) {
+    return (
+      <div className="px-5 pb-4">
+        <div
+          className="p-3 rounded-lg"
+          style={{ backgroundColor: "rgba(255, 255, 255, 0.04)" }}
+        >
+          <div
+            className="text-xs font-semibold uppercase tracking-wide"
+            style={{ color: "var(--fpl-text-muted)" }}
+          >
+            Current standings
+          </div>
+          <div className="text-xs mt-2" style={{ color: "var(--fpl-text-muted)" }}>
+            Loading standings...
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  const { homeRow, awayRow } = rows;
+
+  return (
+    <div className="px-5 pb-4">
+      <div
+        className="p-3 rounded-lg"
+        style={{ backgroundColor: "rgba(255, 255, 255, 0.04)" }}
+      >
+        <div
+          className="text-xs font-semibold uppercase tracking-wide mb-2"
+          style={{ color: "var(--fpl-text-muted)" }}
+        >
+          Current standings
+        </div>
+        <div className="space-y-2 text-sm">
+          <div className="flex items-center justify-between">
+            <span style={{ color: "var(--fpl-text-muted)" }}>{homeTeam}</span>
+            <span
+              className="font-semibold tabular-nums"
+              style={{ color: "var(--fpl-text-primary)" }}
+            >
+              {homeRow ? `#${homeRow.rank} · ${homeRow.points} pts` : "N/A"}
+            </span>
+          </div>
+          <div className="flex items-center justify-between">
+            <span style={{ color: "var(--fpl-text-muted)" }}>{awayTeam}</span>
+            <span
+              className="font-semibold tabular-nums"
+              style={{ color: "var(--fpl-text-primary)" }}
+            >
+              {awayRow ? `#${awayRow.rank} · ${awayRow.points} pts` : "N/A"}
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 type TeamBreakdownProps = {
   label: string;
   side: MatchupResponse["home"];
   accentColor: string;
   align: "left" | "right";
+  showCaptains: boolean;
 };
 
-function TeamBreakdown({ label, side, accentColor, align }: TeamBreakdownProps) {
+function TeamBreakdown({
+  label,
+  side,
+  accentColor,
+  align,
+  showCaptains
+}: TeamBreakdownProps) {
   const captainName =
-    side.managers.find((manager) => manager.isCaptain)?.managerName ?? "TBA";
+    showCaptains
+      ? side.managers.find((manager) => manager.isCaptain)?.managerName ?? "TBA"
+      : "TBA";
   const isRight = align === "right";
   return (
     <div
@@ -324,6 +496,7 @@ function TeamBreakdown({ label, side, accentColor, align }: TeamBreakdownProps) 
             manager={manager}
             label={`Manager ${index + 1}`}
             accentColor={accentColor}
+            showCaptains={showCaptains}
           />
         ))}
       </div>
@@ -335,9 +508,15 @@ type ManagerRowProps = {
   manager: MatchupResponse["home"]["managers"][number];
   label: string;
   accentColor: string;
+  showCaptains: boolean;
 };
 
-function ManagerRow({ manager, label, accentColor }: ManagerRowProps) {
+function ManagerRow({
+  manager,
+  label,
+  accentColor,
+  showCaptains
+}: ManagerRowProps) {
   const displayName = manager.managerName ?? label;
   return (
     <div
@@ -346,7 +525,7 @@ function ManagerRow({ manager, label, accentColor }: ManagerRowProps) {
     >
       <div className="min-w-0">
         <div className="flex items-center gap-2">
-          {manager.isCaptain && (
+          {showCaptains && manager.isCaptain && (
             <Crown size={12} style={{ color: accentColor, flexShrink: 0 }} />
           )}
           <span

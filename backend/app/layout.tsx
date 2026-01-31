@@ -1,4 +1,5 @@
 import "./globals.css";
+import { BottomTabBar } from "./components/bottom-tab-bar";
 
 export const metadata = {
   title: "Matchday Backend",
@@ -12,7 +13,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        <div className="min-h-screen pb-24">{children}</div>
+        <BottomTabBar />
+      </body>
     </html>
   );
 }

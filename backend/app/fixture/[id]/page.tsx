@@ -77,6 +77,7 @@ export default function FixtureDetailPage() {
       banner={banner}
       allowCaptainSelection={allowCaptainSelection}
       onRefresh={refreshNow}
+      challengeFixtures={data?.challengeFixtures ?? []}
     />
   );
 }

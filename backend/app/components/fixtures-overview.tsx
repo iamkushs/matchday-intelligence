@@ -1,11 +1,12 @@
 import Link from "next/link";
 import { Crown } from "lucide-react";
-import type { GameweekStatus, MatchupResponse } from "../../lib/types";
+import type { ChallengeFixture, GameweekStatus, MatchupResponse } from "../../lib/types";
 import { Skeleton } from "./ui/skeleton";
 import { NotStartedAnimation } from "./not-started-animation";
 
 type FixturesOverviewProps = {
   matchups: MatchupResponse[];
+  challengeFixtures: ChallengeFixture[];
   gameweek: number;
   selectedGameweek: number;
   availableGameweeks: number[];
@@ -25,6 +26,7 @@ const teamColors = {
 
 export function FixturesOverview({
   matchups,
+  challengeFixtures,
   gameweek,
   selectedGameweek,
   availableGameweeks,
@@ -130,9 +132,72 @@ export function FixturesOverview({
                 <Skeleton key={index} className="h-32 rounded-xl bg-white/5" />
               ))
             : visibleMatchups.map((matchup) => (
-                <FixtureCard key={matchup.id} matchup={matchup} isFinished={isFinished} />
+                <FixtureCard
+                  key={matchup.id}
+                  matchup={matchup}
+                  isFinished={isFinished}
+                  showCaptains={Boolean(gwStatus?.isCurrent || gwStatus?.isFinished)}
+                />
               ))}
         </div>
+
+        {challengeFixtures.length > 0 && (
+          <div className="px-5 pb-10">
+            <h2
+              className="text-xs font-semibold tracking-wider uppercase mb-3"
+              style={{ color: "var(--fpl-text-muted)" }}
+            >
+              Challenge Fixtures
+            </h2>
+            <div className="space-y-3">
+              {challengeFixtures.map((fixture, index) => (
+                <div
+                  key={`${fixture.challengerTeamName}-${fixture.opponentTeamName}-${index}`}
+                  className="p-4 rounded-xl"
+                  style={{
+                    backgroundColor: "var(--fpl-bg-card)",
+                    boxShadow: "0 0 0 1px rgba(255, 255, 255, 0.05)"
+                  }}
+                >
+                  <div className="flex items-start justify-between mb-3">
+                    <div className="text-sm font-semibold" style={{ color: "var(--fpl-text-primary)" }}>
+                      {fixture.challengerTeamName}
+                    </div>
+                    <div
+                      className="text-[11px] uppercase tracking-wide"
+                      style={{ color: "var(--fpl-text-muted)" }}
+                    >
+                      Challenge
+                    </div>
+                    <div className="text-sm font-semibold" style={{ color: "var(--fpl-text-primary)" }}>
+                      {fixture.opponentTeamName}
+                    </div>
+                  </div>
+                  <div className="flex items-center justify-center gap-4 mb-2">
+                    <span
+                      className="text-2xl font-bold tabular-nums"
+                      style={{ color: teamColors.home }}
+                    >
+                      {fixture.challengerTvtPoints}
+                    </span>
+                    <span className="text-lg" style={{ color: "var(--fpl-text-muted)" }}>
+                      -
+                    </span>
+                    <span
+                      className="text-2xl font-bold tabular-nums"
+                      style={{ color: teamColors.away }}
+                    >
+                      {fixture.opponentTvtPoints}
+                    </span>
+                  </div>
+                  <div className="text-xs text-center" style={{ color: "var(--fpl-text-muted)" }}>
+                    Base points earned: {fixture.challengerBaseLeaguePoints}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
@@ -141,9 +206,10 @@ export function FixturesOverview({
 type FixtureCardProps = {
   matchup: MatchupResponse;
   isFinished: boolean;
+  showCaptains: boolean;
 };
 
-function FixtureCard({ matchup, isFinished }: FixtureCardProps) {
+function FixtureCard({ matchup, isFinished, showCaptains }: FixtureCardProps) {
   const pointsDiff = matchup.home.totalPoints - matchup.away.totalPoints;
   const isLive = !isFinished;
 
@@ -158,12 +224,36 @@ function FixtureCard({ matchup, isFinished }: FixtureCardProps) {
     >
       <div className="flex items-start justify-between mb-4">
         <div className="flex-1">
-          <h3
-            className="text-base font-semibold tracking-tight"
-            style={{ color: "var(--fpl-text-primary)" }}
-          >
-            {matchup.home.name}
-          </h3>
+          <div className="flex items-center gap-2">
+            <h3
+              className="text-base font-semibold tracking-tight"
+              style={{ color: "var(--fpl-text-primary)" }}
+            >
+              {matchup.home.name}
+            </h3>
+            {matchup.homeChipType === "double_pointer" && (
+              <span
+                className="px-1.5 py-0.5 rounded-full text-[9px] uppercase"
+                style={{
+                  backgroundColor: "rgba(255, 255, 255, 0.08)",
+                  color: "var(--fpl-text-primary)"
+                }}
+              >
+                D
+              </span>
+            )}
+            {matchup.homeChipType === "win_win" && (
+              <span
+                className="px-1.5 py-0.5 rounded-full text-[9px] uppercase"
+                style={{
+                  backgroundColor: "rgba(255, 255, 255, 0.08)",
+                  color: "var(--fpl-text-primary)"
+                }}
+              >
+                W
+              </span>
+            )}
+          </div>
         </div>
         <div
           className={`px-2 py-0.5 rounded-md mx-3 ${
@@ -181,12 +271,36 @@ function FixtureCard({ matchup, isFinished }: FixtureCardProps) {
           </span>
         </div>
         <div className="flex-1 text-right">
-          <h3
-            className="text-base font-semibold tracking-tight"
-            style={{ color: "var(--fpl-text-primary)" }}
-          >
-            {matchup.away.name}
-          </h3>
+          <div className="flex items-center justify-end gap-2">
+            {matchup.awayChipType === "double_pointer" && (
+              <span
+                className="px-1.5 py-0.5 rounded-full text-[9px] uppercase"
+                style={{
+                  backgroundColor: "rgba(255, 255, 255, 0.08)",
+                  color: "var(--fpl-text-primary)"
+                }}
+              >
+                D
+              </span>
+            )}
+            {matchup.awayChipType === "win_win" && (
+              <span
+                className="px-1.5 py-0.5 rounded-full text-[9px] uppercase"
+                style={{
+                  backgroundColor: "rgba(255, 255, 255, 0.08)",
+                  color: "var(--fpl-text-primary)"
+                }}
+              >
+                W
+              </span>
+            )}
+            <h3
+              className="text-base font-semibold tracking-tight"
+              style={{ color: "var(--fpl-text-primary)" }}
+            >
+              {matchup.away.name}
+            </h3>
+          </div>
         </div>
       </div>
 
@@ -237,7 +351,7 @@ function FixtureCard({ matchup, isFinished }: FixtureCardProps) {
               className="text-[11px] font-semibold mt-1 truncate"
               style={{ color: teamColors.home }}
             >
-              {getCaptainLabel(matchup.home.managers)}
+              {getCaptainLabel(matchup.home.managers, showCaptains)}
             </div>
             <div className="h-px bg-white/5 my-2" />
             <div className="grid grid-cols-2 text-xs">
@@ -270,7 +384,7 @@ function FixtureCard({ matchup, isFinished }: FixtureCardProps) {
               className="text-[11px] font-semibold mt-1 truncate"
               style={{ color: teamColors.away }}
             >
-              {getCaptainLabel(matchup.away.managers)}
+              {getCaptainLabel(matchup.away.managers, showCaptains)}
             </div>
             <div className="h-px bg-white/5 my-2" />
             <div className="grid grid-cols-2 text-xs">
@@ -289,7 +403,13 @@ function FixtureCard({ matchup, isFinished }: FixtureCardProps) {
   );
 }
 
-function getCaptainLabel(managers: MatchupResponse["home"]["managers"]) {
+function getCaptainLabel(
+  managers: MatchupResponse["home"]["managers"],
+  showCaptains: boolean
+) {
+  if (!showCaptains) {
+    return "TBA";
+  }
   const captain = managers.find((manager) => manager.isCaptain);
   return captain?.managerName ?? "TBA";
 }

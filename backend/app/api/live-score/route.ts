@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import matchupsData from "../../../data/matchups.json";
 import captainsData from "../../../data/captains.json";
 import teamsData from "../../../data/teams.json";
+import chipsData from "../../../data/chips.json";
 import path from "path";
 import { promises as fs } from "fs";
 import { getSupabaseAdmin } from "../../../lib/supabase";
@@ -25,9 +26,10 @@ import type {
   MatchupsFile,
   MatchupResponse,
   CaptainSelectionRow,
-  TeamsFile
+  TeamsFile,
+  ChallengeFixture
 } from "../../../lib/types";
-import { computeMatchupTotals } from "../../../lib/scoring";
+import { computeMatchupTotals, computeSideTotals } from "../../../lib/scoring";
 
 const CACHE_CONTROL_VALUE = "s-maxage=10, stale-while-revalidate=30";
 
@@ -238,6 +240,24 @@ function hasGameweekStarted(bootstrap: any, gw: number) {
 
 function applyFallbackCaptains(payload: LiveScoreApiResponse) {
   payload.matchups = payload.matchups.map((matchup) => {
+    if (typeof matchup.homeBaseLeaguePoints !== "number") {
+      let homeBase: 0 | 1 | 2 = 0;
+      let awayBase: 0 | 1 | 2 = 0;
+      if (matchup.home.totalPoints > matchup.away.totalPoints) {
+        homeBase = 2;
+      } else if (matchup.home.totalPoints < matchup.away.totalPoints) {
+        awayBase = 2;
+      } else {
+        homeBase = 1;
+        awayBase = 1;
+      }
+      matchup.homeBaseLeaguePoints = homeBase;
+      matchup.awayBaseLeaguePoints = awayBase;
+      matchup.homeFinalLeaguePoints = homeBase;
+      matchup.awayFinalLeaguePoints = awayBase;
+      matchup.homeChipType = matchup.homeChipType ?? null;
+      matchup.awayChipType = matchup.awayChipType ?? null;
+    }
     const normalizeSide = (side: MatchupResponse["home"]) => {
       if (side.captainEntryId || side.captainStatus !== "pending") {
         return side;
@@ -267,7 +287,199 @@ function applyFallbackCaptains(payload: LiveScoreApiResponse) {
       away: normalizeSide(matchup.away)
     };
   });
+  if (!payload.challengeFixtures) {
+    payload.challengeFixtures = [];
+  }
   return payload;
+}
+
+type ChipsFile = {
+  byGameweek?: Record<
+    string,
+    Record<
+      string,
+      {
+        chipType?: string | null;
+        challengeOpponentTeamName?: string | null;
+      }
+    >
+  >;
+};
+
+function findTeamInMatchups(matchups: MatchupConfig[], teamName: string) {
+  for (const matchup of matchups) {
+    if (matchup.home.name === teamName) {
+      return {
+        matchupId: matchup.id,
+        side: "home" as const,
+        managers: matchup.home.managers
+      };
+    }
+    if (matchup.away.name === teamName) {
+      return {
+        matchupId: matchup.id,
+        side: "away" as const,
+        managers: matchup.away.managers
+      };
+    }
+  }
+  return null;
+}
+
+function getTeamManagers(
+  teamName: string,
+  matchups: MatchupConfig[],
+  teamsFile: TeamsFile
+) {
+  const fromMatchups = findTeamInMatchups(matchups, teamName);
+  if (fromMatchups) {
+    return fromMatchups;
+  }
+  const team = teamsFile?.teams?.find((item) => item.teamName === teamName);
+  const entryIds = (team?.members ?? [])
+    .map((member) => member.entryId)
+    .filter((entryId): entryId is number => typeof entryId === "number");
+  if (entryIds.length) {
+    return {
+      matchupId: null,
+      side: null,
+      managers: entryIds
+    };
+  }
+  return null;
+}
+
+function computeChallengeFixtures({
+  gw,
+  matchups,
+  teamsFile,
+  chipsFile,
+  captainSelections,
+  captainsFile,
+  managerStats,
+  managerMeta,
+  warnings
+}: {
+  gw: number;
+  matchups: MatchupConfig[];
+  teamsFile: TeamsFile;
+  chipsFile: ChipsFile;
+  captainSelections: CaptainSelectionMap;
+  captainsFile: CaptainsFile;
+  managerStats: Map<number, ManagerStats>;
+  managerMeta: Map<number, { managerName?: string; fplTeamName?: string }>;
+  warnings: string[];
+}): ChallengeFixture[] {
+  const gwKey = String(gw);
+  const chipsForGw = chipsFile?.byGameweek?.[gwKey];
+  if (!chipsForGw) {
+    return [];
+  }
+
+  const fixtures: ChallengeFixture[] = [];
+
+  for (const [teamName, chip] of Object.entries(chipsForGw)) {
+    if (!chip || chip.chipType !== "challenge") {
+      continue;
+    }
+    const opponentName = chip.challengeOpponentTeamName;
+    if (!opponentName) {
+      warnings.push(`Challenge chip missing opponent for team=${teamName} (gw=${gw}).`);
+      continue;
+    }
+
+    const challengerInfo = getTeamManagers(teamName, matchups, teamsFile);
+    const opponentInfo = getTeamManagers(opponentName, matchups, teamsFile);
+
+    if (!challengerInfo) {
+      warnings.push(`Challenge chip team not found: ${teamName} (gw=${gw}).`);
+      continue;
+    }
+    if (!opponentInfo) {
+      warnings.push(`Challenge chip opponent not found: ${opponentName} (gw=${gw}).`);
+      continue;
+    }
+
+    const challengerCaptainConfig =
+      challengerInfo.matchupId && challengerInfo.side
+        ? resolveCaptainConfig(
+            captainsFile,
+            captainSelections,
+            gw,
+            challengerInfo.matchupId
+          )
+        : {
+            homeCaptain: null,
+            awayCaptain: null,
+            homeStatus: "pending" as const,
+            awayStatus: "pending" as const
+          };
+    const opponentCaptainConfig =
+      opponentInfo.matchupId && opponentInfo.side
+        ? resolveCaptainConfig(
+            captainsFile,
+            captainSelections,
+            gw,
+            opponentInfo.matchupId
+          )
+        : {
+            homeCaptain: null,
+            awayCaptain: null,
+            homeStatus: "pending" as const,
+            awayStatus: "pending" as const
+          };
+
+    const challengerCaptainId =
+      challengerInfo.side === "home"
+        ? challengerCaptainConfig.homeCaptain
+        : challengerCaptainConfig.awayCaptain;
+    const opponentCaptainId =
+      opponentInfo.side === "home"
+        ? opponentCaptainConfig.homeCaptain
+        : opponentCaptainConfig.awayCaptain;
+
+    const challengerTotals = computeSideTotals(
+      challengerInfo.managers,
+      challengerCaptainId ?? null,
+      "selected",
+      managerStats,
+      managerMeta,
+      warnings,
+      `challenge-${gw}-${teamName}`,
+      "home"
+    );
+    const opponentTotals = computeSideTotals(
+      opponentInfo.managers,
+      opponentCaptainId ?? null,
+      "selected",
+      managerStats,
+      managerMeta,
+      warnings,
+      `challenge-${gw}-${opponentName}`,
+      "away"
+    );
+
+    let challengerBaseLeaguePoints: 0 | 1 | 2 = 0;
+    if (challengerTotals.totalPoints > opponentTotals.totalPoints) {
+      challengerBaseLeaguePoints = 2;
+    } else if (challengerTotals.totalPoints === opponentTotals.totalPoints) {
+      challengerBaseLeaguePoints = 1;
+    }
+
+    fixtures.push({
+      gw,
+      challengerTeamName: teamName,
+      opponentTeamName: opponentName,
+      challengerManagers: challengerInfo.managers,
+      opponentManagers: opponentInfo.managers,
+      challengerTvtPoints: challengerTotals.totalPoints,
+      opponentTvtPoints: opponentTotals.totalPoints,
+      challengerBaseLeaguePoints,
+      createdFromChip: "challenge"
+    });
+  }
+
+  return fixtures;
 }
 
 export async function GET(request: Request) {
@@ -294,6 +506,7 @@ export async function GET(request: Request) {
       activeGw,
       generatedAt: new Date().toISOString(),
       matchups: [],
+      challengeFixtures: [],
       warnings: [`Gameweek ${gw} has not started yet. Check back later.`],
       gwStatus
     };
@@ -308,6 +521,9 @@ export async function GET(request: Request) {
     const cachedResults = await readResults(gw, warnings);
     if (cachedResults) {
       const normalized = applyFallbackCaptains(cachedResults);
+      if (!normalized.challengeFixtures) {
+        normalized.challengeFixtures = [];
+      }
       const filteredMatchups = matchupId
         ? normalized.matchups.filter((matchup) => matchup.id === matchupId)
         : normalized.matchups;
@@ -331,6 +547,7 @@ export async function GET(request: Request) {
       activeGw,
       generatedAt: new Date().toISOString(),
       matchups: [],
+      challengeFixtures: [],
       warnings: [`Archived results for gameweek ${gw} are not available yet.`],
       gwStatus
     };
@@ -344,6 +561,9 @@ export async function GET(request: Request) {
     const cachedResults = await readResults(gw, warnings);
     if (cachedResults) {
       const normalized = applyFallbackCaptains(cachedResults);
+      if (!normalized.challengeFixtures) {
+        normalized.challengeFixtures = [];
+      }
       const filteredMatchups = matchupId
         ? normalized.matchups.filter((matchup) => matchup.id === matchupId)
         : normalized.matchups;
@@ -366,6 +586,7 @@ export async function GET(request: Request) {
   const matchupsFile = matchupsData as MatchupsFile;
   const captainsFile = captainsData as CaptainsFile;
   const teamsFile = teamsData as TeamsFile;
+  const chipsFile = chipsData as ChipsFile;
   const captainSelections = await fetchCaptainSelections(gw, warnings);
 
   const gwKey = String(gw);
@@ -543,11 +764,83 @@ export async function GET(request: Request) {
     return computeMatchupTotals(matchup, captainConfig, managerStats, managerMeta, warnings);
   });
 
+  const chipsForGw = chipsFile?.byGameweek?.[gwKey] ?? {};
+  for (const matchup of matchupResponses) {
+    const homeChip = chipsForGw[matchup.home.name];
+    const awayChip = chipsForGw[matchup.away.name];
+
+    if (homeChip?.chipType === "challenge") {
+      matchup.homeChipType = "challenge";
+    }
+    if (awayChip?.chipType === "challenge") {
+      matchup.awayChipType = "challenge";
+    }
+
+    const homeHasWinWin = homeChip?.chipType === "win_win";
+    const awayHasWinWin = awayChip?.chipType === "win_win";
+    const homeHasDouble = homeChip?.chipType === "double_pointer";
+    const awayHasDouble = awayChip?.chipType === "double_pointer";
+
+    if (homeHasWinWin && homeHasDouble) {
+      warnings.push(
+        `Team ${matchup.home.name} has both win_win and double_pointer (gw=${gw}); win_win applied.`
+      );
+    }
+    if (awayHasWinWin && awayHasDouble) {
+      warnings.push(
+        `Team ${matchup.away.name} has both win_win and double_pointer (gw=${gw}); win_win applied.`
+      );
+    }
+
+    if (homeHasWinWin) {
+      matchup.homeChipType = "win_win";
+      matchup.homeFinalLeaguePoints = 2;
+    } else if (homeHasDouble) {
+      matchup.homeChipType = "double_pointer";
+      matchup.homeFinalLeaguePoints = matchup.homeBaseLeaguePoints * 2;
+    }
+
+    if (awayHasWinWin) {
+      matchup.awayChipType = "win_win";
+      matchup.awayFinalLeaguePoints = 2;
+    } else if (awayHasDouble) {
+      matchup.awayChipType = "double_pointer";
+      matchup.awayFinalLeaguePoints = matchup.awayBaseLeaguePoints * 2;
+    }
+  }
+
+  for (const [teamName, chip] of Object.entries(chipsForGw)) {
+    if (chip?.chipType !== "double_pointer" && chip?.chipType !== "win_win") {
+      continue;
+    }
+    const found = matchupResponses.some(
+      (matchup) => matchup.home.name === teamName || matchup.away.name === teamName
+    );
+    if (!found) {
+      warnings.push(
+        `Chip team not found: ${teamName} (gw=${gw}, chip=${chip.chipType}).`
+      );
+    }
+  }
+
+  const challengeFixtures = computeChallengeFixtures({
+    gw,
+    matchups: resolvedMatchups,
+    teamsFile,
+    chipsFile,
+    captainSelections,
+    captainsFile,
+    managerStats,
+    managerMeta,
+    warnings
+  });
+
   const response: LiveScoreApiResponse = {
     gw,
     activeGw,
     generatedAt: new Date().toISOString(),
     matchups: matchupResponses,
+    challengeFixtures,
     warnings,
     gwStatus
   };

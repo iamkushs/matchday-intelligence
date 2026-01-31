@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import animationData from "../../Assets/animations/12345.json";
 
 type NotStartedAnimationProps = {
   className?: string;
@@ -26,7 +25,7 @@ export function NotStartedAnimation({ className }: NotStartedAnimationProps) {
         renderer: "svg",
         loop: true,
         autoplay: true,
-        animationData
+        path: "/Assets/animations/12345.json"
       });
       animation.setSpeed?.(0.5);
     }

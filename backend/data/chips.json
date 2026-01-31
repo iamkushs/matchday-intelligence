@@ -1,0 +1,24 @@
+{
+  "byGameweek": {
+    "23": {},
+    "24": {
+      "The Invincibles": {
+        "chipType": "challenge",
+        "challengeOpponentTeamName": "Royal Indians"
+      },
+      "Thunderbolts": {
+        "chipType": "challenge",
+        "challengeOpponentTeamName": "Royal Indians"
+      },
+      "Scouse Force": {
+        "chipType": "double_pointer"
+      },
+      "Team Rocket": {
+        "chipType": "win_win"
+      },
+      "Super Saiyans": {
+        "chipType": "win_win"
+      }
+    }
+  }
+}

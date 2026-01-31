@@ -117,6 +117,17 @@ export function computeMatchupTotals(
     "away"
   );
 
+  let homeBaseLeaguePoints: 0 | 1 | 2 = 0;
+  let awayBaseLeaguePoints: 0 | 1 | 2 = 0;
+  if (homeTotals.totalPoints > awayTotals.totalPoints) {
+    homeBaseLeaguePoints = 2;
+  } else if (homeTotals.totalPoints < awayTotals.totalPoints) {
+    awayBaseLeaguePoints = 2;
+  } else {
+    homeBaseLeaguePoints = 1;
+    awayBaseLeaguePoints = 1;
+  }
+
   return {
     id: matchup.id,
     home: {
@@ -128,6 +139,12 @@ export function computeMatchupTotals(
       name: matchup.away.name,
       captainStatus: captainConfig.awayStatus,
       ...awayTotals
-    }
+    },
+    homeBaseLeaguePoints,
+    awayBaseLeaguePoints,
+    homeFinalLeaguePoints: homeBaseLeaguePoints,
+    awayFinalLeaguePoints: awayBaseLeaguePoints,
+    homeChipType: null,
+    awayChipType: null
   };
 }

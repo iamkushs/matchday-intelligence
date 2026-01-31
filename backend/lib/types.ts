@@ -49,6 +49,12 @@ export type MatchupResponse = {
   id: string;
   home: SideResponse;
   away: SideResponse;
+  homeBaseLeaguePoints: 0 | 1 | 2;
+  awayBaseLeaguePoints: 0 | 1 | 2;
+  homeFinalLeaguePoints: number;
+  awayFinalLeaguePoints: number;
+  homeChipType: "double_pointer" | "challenge" | "win_win" | null;
+  awayChipType: "double_pointer" | "challenge" | "win_win" | null;
 };
 
 export type EntryEventPicks = {
@@ -89,6 +95,7 @@ export type LiveScoreApiResponse = {
   activeGw: number | null;
   generatedAt: string;
   matchups: MatchupResponse[];
+  challengeFixtures: ChallengeFixture[];
   warnings: string[];
   gwStatus: GameweekStatus | null;
 };
@@ -110,6 +117,44 @@ export type GameweekStatus = {
   isNext: boolean;
   isFinished: boolean;
   isStarted: boolean;
+};
+
+export type RankingsRow = {
+  rank: number;
+  team_name: string;
+  mp: number;
+  w: number;
+  d: number;
+  l: number;
+  cp_bp: number;
+  points: number;
+  overall_scores: number;
+  qualifying_for: string;
+};
+
+export type RankingsApiResponse = {
+  gw: number;
+  baselineGw: number;
+  groupA: RankingsRow[];
+  groupB: RankingsRow[];
+  warnings: string[];
+  sourceSummary: Array<{
+    gw: number;
+    source: "live" | "archived";
+    archivedStatus: "finished" | "live" | null;
+  }>;
+};
+
+export type ChallengeFixture = {
+  gw: number;
+  challengerTeamName: string;
+  opponentTeamName: string;
+  challengerManagers: number[];
+  opponentManagers: number[];
+  challengerTvtPoints: number;
+  opponentTvtPoints: number;
+  challengerBaseLeaguePoints: 0 | 1 | 2;
+  createdFromChip: "challenge";
 };
 
 export type ElementToTeamMap = Map<number, number>;

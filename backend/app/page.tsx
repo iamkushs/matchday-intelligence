@@ -10,6 +10,7 @@ export default function HomePage() {
   const [dismissedWarning, setDismissedWarning] = useState(false);
 
   const matchups = data?.matchups ?? [];
+  const challengeFixtures = data?.challengeFixtures ?? [];
   const gameweek = data?.gw ?? 0;
   const warnings = dismissedWarning ? [] : data?.warnings ?? [];
   const gwStatus = data?.gwStatus ?? null;
@@ -46,6 +47,7 @@ export default function HomePage() {
   return (
     <FixturesOverview
       matchups={matchups}
+      challengeFixtures={challengeFixtures}
       gameweek={gameweek}
       selectedGameweek={selectedGameweek ?? gameweek}
       availableGameweeks={availableGameweeks}
