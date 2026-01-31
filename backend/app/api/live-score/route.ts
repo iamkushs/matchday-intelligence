@@ -198,14 +198,42 @@ function buildGwStatus(bootstrap: any, gw: number): GameweekStatus | null {
   if (!event) {
     return null;
   }
+  const now = Date.now();
+  const leadMs = 12 * 60 * 60 * 1000;
+  let isWithinLead = false;
+  if (typeof event?.deadline_time === "string") {
+    const deadline = Date.parse(event.deadline_time);
+    isWithinLead = !Number.isNaN(deadline) && now >= deadline - leadMs;
+  }
   return {
     id: gw,
     name: event?.name,
     isCurrent: Boolean(event?.is_current),
     isNext: Boolean(event?.is_next),
     isFinished: Boolean(event?.finished),
-    isStarted: Boolean(event?.is_current || event?.is_previous || event?.finished)
+    isStarted: Boolean(
+      event?.is_current || event?.is_previous || event?.finished || isWithinLead
+    )
   };
+}
+
+function hasGameweekStarted(bootstrap: any, gw: number) {
+  const events = bootstrap?.events;
+  if (!Array.isArray(events)) {
+    return false;
+  }
+  const event = events.find((item: any) => item?.id === gw);
+  if (!event) {
+    return false;
+  }
+  if (event?.is_current || event?.is_previous || event?.finished) {
+    return true;
+  }
+  if (typeof event?.deadline_time === "string") {
+    const deadline = Date.parse(event.deadline_time);
+    return !Number.isNaN(deadline) && Date.now() >= deadline;
+  }
+  return false;
 }
 
 function applyFallbackCaptains(payload: LiveScoreApiResponse) {
@@ -433,8 +461,19 @@ export async function GET(request: Request) {
   const managerStats = new Map<number, ManagerStats>();
   let missingElementWarning = false;
 
+  const canFetchPicks = hasGameweekStarted(bootstrap, gw);
+
   await Promise.all(
     uniqueEntryIds.map(async (entryId) => {
+      if (!canFetchPicks) {
+        managerStats.set(entryId, {
+          entryId,
+          gwPoints: 0,
+          playersLeftToPlay: 0
+        });
+        return;
+      }
+
       const picksData = await getEntryEventPicks(entryId, gw);
       if (!picksData) {
         warnings.push(
