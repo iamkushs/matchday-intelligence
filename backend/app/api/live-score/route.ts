@@ -135,7 +135,7 @@ async function fetchCaptainSelections(
     warnings.push("Unable to load captain selections from storage.");
     return selections;
   }
-  for (const row of data ?? []) {
+  for (const row of (data ?? []) as any[]) {
     if (!row?.matchup_id || (row.side !== "home" && row.side !== "away")) {
       continue;
     }
