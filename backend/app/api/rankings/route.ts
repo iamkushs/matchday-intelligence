@@ -96,13 +96,15 @@ export async function GET(request: Request) {
   const groupB = await loadBaselineStandings("standings_group_b.json");
   const groupIndex = buildGroupIndex(groupA, groupB);
 
-  if (gw <= 27) {
+  const baselineGw = 27;
+
+  if (gw <= baselineGw) {
     const sortedA = groupA.slice().sort((a, b) => a.rank - b.rank);
     const sortedB = groupB.slice().sort((a, b) => a.rank - b.rank);
     return NextResponse.json(
       {
         gw,
-        baselineGw: 27,
+        baselineGw,
         groupA: buildRankedResponse(sortedA),
         groupB: buildRankedResponse(sortedB),
         warnings,
@@ -120,7 +122,7 @@ export async function GET(request: Request) {
   const standingsB = cloneStandings(groupB);
 
   const gws = [];
-  for (let current = 24; current <= gw; current += 1) {
+  for (let current = baselineGw + 1; current <= gw; current += 1) {
     gws.push(current);
   }
 
@@ -184,7 +186,7 @@ export async function GET(request: Request) {
   return NextResponse.json(
     {
       gw,
-      baselineGw: 27,
+      baselineGw,
       groupA: buildRankedResponse(rankedA),
       groupB: buildRankedResponse(rankedB),
       warnings,
