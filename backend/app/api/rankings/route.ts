@@ -9,6 +9,7 @@ import {
   buildGroupIndex,
   buildRankedResponse,
   cloneStandings,
+  incrementMatchesPlayed,
   isArchivedFinished,
   loadBaselineStandings,
   sortAndRank,
@@ -95,13 +96,13 @@ export async function GET(request: Request) {
   const groupB = await loadBaselineStandings("standings_group_b.json");
   const groupIndex = buildGroupIndex(groupA, groupB);
 
-  if (gw <= 23) {
+  if (gw <= 27) {
     const sortedA = groupA.slice().sort((a, b) => a.rank - b.rank);
     const sortedB = groupB.slice().sort((a, b) => a.rank - b.rank);
     return NextResponse.json(
       {
         gw,
-        baselineGw: 23,
+        baselineGw: 27,
         groupA: buildRankedResponse(sortedA),
         groupB: buildRankedResponse(sortedB),
         warnings,
@@ -165,15 +166,14 @@ export async function GET(request: Request) {
       continue;
     }
 
-    const updatedTeams = new Set<string>();
+    incrementMatchesPlayed(standingsA, standingsB);
     for (const matchup of matchups) {
       applyMatchupDelta(
         matchup,
         standingsA,
         standingsB,
         groupIndex,
-        warnings,
-        updatedTeams
+        warnings
       );
     }
   }
@@ -184,7 +184,7 @@ export async function GET(request: Request) {
   return NextResponse.json(
     {
       gw,
-      baselineGw: 23,
+      baselineGw: 27,
       groupA: buildRankedResponse(rankedA),
       groupB: buildRankedResponse(rankedB),
       warnings,
