@@ -24,6 +24,13 @@ const FIXTURES_TTL_MS = 30 * 1000;
 const LIVE_EVENT_TTL_MS = 10 * 1000;
 const PICKS_TTL_MS = 10 * 1000;
 
+const DEFAULT_HEADERS = {
+  "User-Agent":
+    "Mozilla/5.0 (compatible; TVT/1.0; +https://github.com/iamkushs/matchday-intelligence)",
+  Accept: "application/json",
+  "Accept-Language": "en-US,en;q=0.9"
+};
+
 export async function fetchWithTimeout(
   url: string,
   timeoutMs: number,
@@ -31,12 +38,18 @@ export async function fetchWithTimeout(
 ) {
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), timeoutMs);
+  const mergedHeaders = new Headers(DEFAULT_HEADERS);
+  if (init?.headers) {
+    const extra = new Headers(init.headers);
+    extra.forEach((value, key) => mergedHeaders.set(key, value));
+  }
 
   try {
     const response = await fetch(url, {
       ...init,
       signal: controller.signal,
-      cache: "no-store"
+      cache: "no-store",
+      headers: mergedHeaders
     });
     return response;
   } finally {

@@ -191,6 +191,20 @@ async function writeResults(
   return writeResultsFile(gw, payload);
 }
 
+function getMaxMatchupsGw(matchupsFile: MatchupsFile | null) {
+  const byGw = matchupsFile?.matchupsByGameweek;
+  if (!byGw) {
+    return null;
+  }
+  const gwNumbers = Object.keys(byGw)
+    .map((key) => Number(key))
+    .filter((value) => Number.isFinite(value));
+  if (!gwNumbers.length) {
+    return null;
+  }
+  return Math.max(...gwNumbers);
+}
+
 function buildGwStatus(bootstrap: any, gw: number): GameweekStatus | null {
   const events = bootstrap?.events;
   if (!Array.isArray(events)) {
@@ -488,8 +502,14 @@ export async function GET(request: Request) {
   const gwParam = url.searchParams.get("gw");
   const matchupId = url.searchParams.get("matchupId");
 
+  const matchupsFile = matchupsData as MatchupsFile;
+  const captainsFile = captainsData as CaptainsFile;
+  const teamsFile = teamsData as TeamsFile;
+  const chipsFile = chipsData as ChipsFile;
+  const fallbackGw = getMaxMatchupsGw(matchupsFile);
+
   const bootstrap = await getBootstrapStatic();
-  const activeGw = bootstrap ? getCurrentGameweek(bootstrap) : null;
+  const activeGw = bootstrap ? getCurrentGameweek(bootstrap) : fallbackGw;
   let gw = gwParam ? Number(gwParam) : null;
   if (!gw || Number.isNaN(gw)) {
     gw = activeGw;
@@ -583,10 +603,6 @@ export async function GET(request: Request) {
     }
   }
 
-  const matchupsFile = matchupsData as MatchupsFile;
-  const captainsFile = captainsData as CaptainsFile;
-  const teamsFile = teamsData as TeamsFile;
-  const chipsFile = chipsData as ChipsFile;
   const captainSelections = await fetchCaptainSelections(gw, warnings);
 
   const gwKey = String(gw);
@@ -682,7 +698,7 @@ export async function GET(request: Request) {
   const managerStats = new Map<number, ManagerStats>();
   let missingElementWarning = false;
 
-  const canFetchPicks = hasGameweekStarted(bootstrap, gw);
+  const canFetchPicks = bootstrap ? hasGameweekStarted(bootstrap, gw) : true;
 
   await Promise.all(
     uniqueEntryIds.map(async (entryId) => {
