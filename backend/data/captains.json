@@ -68,6 +68,72 @@
                                                  "homeCaptain":  5650872,
                                                  "awayCaptain":  3610641
                                              }
+                              },
+                       "28":  {
+                                  "gw28-4":  {
+                                                 "homeCaptain":  4087222,
+                                                 "awayCaptain":  2641137
+                                             },
+                                  "gw28-14":  {
+                                                  "homeCaptain":  5130955,
+                                                  "awayCaptain":  961158
+                                              },
+                                  "gw28-12":  {
+                                                  "homeCaptain":  5436698,
+                                                  "awayCaptain":  600026
+                                              },
+                                  "gw28-9":  {
+                                                 "homeCaptain":  3193774,
+                                                 "awayCaptain":  null
+                                             },
+                                  "gw28-7":  {
+                                                 "homeCaptain":  1296207,
+                                                 "awayCaptain":  null
+                                             },
+                                  "gw28-2":  {
+                                                 "homeCaptain":  8336609,
+                                                 "awayCaptain":  449240
+                                             },
+                                  "gw28-6":  {
+                                                 "homeCaptain":  5650872,
+                                                 "awayCaptain":  4253839
+                                             },
+                                  "gw28-16":  {
+                                                  "homeCaptain":  55642,
+                                                  "awayCaptain":  5370853
+                                              },
+                                  "gw28-3":  {
+                                                 "homeCaptain":  5141069,
+                                                 "awayCaptain":  2488961
+                                             },
+                                  "gw28-13":  {
+                                                  "homeCaptain":  86139,
+                                                  "awayCaptain":  null
+                                              },
+                                  "gw28-15":  {
+                                                  "homeCaptain":  null,
+                                                  "awayCaptain":  7589170
+                                              },
+                                  "gw28-11":  {
+                                                  "homeCaptain":  1857573,
+                                                  "awayCaptain":  2547868
+                                              },
+                                  "gw28-10":  {
+                                                  "homeCaptain":  3118967,
+                                                  "awayCaptain":  5253559
+                                              },
+                                  "gw28-1":  {
+                                                 "homeCaptain":  2871840,
+                                                 "awayCaptain":  580281
+                                             },
+                                  "gw28-5":  {
+                                                 "homeCaptain":  1258497,
+                                                 "awayCaptain":  17096
+                                             },
+                                  "gw28-8":  {
+                                                 "homeCaptain":  7228653,
+                                                 "awayCaptain":  3144697
+                                             }
                               }
                    }
 }

@@ -19,6 +19,31 @@
       "Super Saiyans": {
         "chipType": "win_win"
       }
+    },
+    "28": {
+      "Slippery Legends": {
+        "chipType": "challenge",
+        "challengeOpponentTeamName": "North Eastern Hillbillies"
+      },
+      "Peaky Blinders": {
+        "chipType": "challenge",
+        "challengeOpponentTeamName": "Dark Knights"
+      },
+      "Reds of Winterfell": {
+        "chipType": "double_pointer"
+      },
+      "Invisible Royals": {
+        "chipType": "double_pointer"
+      },
+      "Highbury Citizens": {
+        "chipType": "double_pointer"
+      },
+      "xG Xorcists": {
+        "chipType": "double_pointer"
+      },
+      "Filthy Foxes": {
+        "chipType": "win_win"
+      }
     }
   }
 }
