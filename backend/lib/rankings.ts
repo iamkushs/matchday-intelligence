@@ -30,6 +30,17 @@ export type RankedResponseGroupRow = Omit<StandingRow, "group" | "baseline_gw"> 
   qualifying_for: string;
 };
 
+const TEAM_NAME_ALIASES: Record<string, string> = {
+  "Despicable Memelennials": "Despicable Memelenials",
+  "North Eastern Hillbillies": "North Eastern Hillibillies",
+  "xG Xorcists": "XX Orcsits",
+  "Maresca's Villagers": "Maresca’s Villagers"
+};
+
+export function normalizeTeamName(name: string) {
+  return TEAM_NAME_ALIASES[name] ?? name;
+}
+
 export async function loadBaselineStandings(
   fileName: string
 ): Promise<GroupStandings> {
@@ -111,23 +122,24 @@ export function applyMatchupDelta(
   standingsA: Map<string, StandingRow>,
   standingsB: Map<string, StandingRow>,
   groupIndex: Map<string, "A" | "B">,
-  warnings: string[],
-  updatedTeams: Set<string>
+  warnings: string[]
 ) {
-  const homeName = matchup.home?.name;
-  const awayName = matchup.away?.name;
-  if (!homeName || !awayName) {
+  const rawHomeName = matchup.home?.name;
+  const rawAwayName = matchup.away?.name;
+  if (!rawHomeName || !rawAwayName) {
     return;
   }
+  const homeName = normalizeTeamName(rawHomeName);
+  const awayName = normalizeTeamName(rawAwayName);
 
   const homeGroup = groupIndex.get(homeName);
   const awayGroup = groupIndex.get(awayName);
   if (!homeGroup || !awayGroup) {
     if (!homeGroup) {
-      warnings.push(`Team not found in baseline: ${homeName}`);
+      warnings.push(`Team not found in baseline: ${rawHomeName}`);
     }
     if (!awayGroup) {
-      warnings.push(`Team not found in baseline: ${awayName}`);
+      warnings.push(`Team not found in baseline: ${rawAwayName}`);
     }
     return;
   }
@@ -136,15 +148,6 @@ export function applyMatchupDelta(
   const awayRow = awayGroup === "A" ? standingsA.get(awayName) : standingsB.get(awayName);
   if (!homeRow || !awayRow) {
     return;
-  }
-
-  if (!updatedTeams.has(homeName)) {
-    homeRow.mp += 1;
-    updatedTeams.add(homeName);
-  }
-  if (!updatedTeams.has(awayName)) {
-    awayRow.mp += 1;
-    updatedTeams.add(awayName);
   }
 
   const { homePoints, awayPoints } = getMatchupTvtPoints(matchup);
@@ -165,6 +168,18 @@ export function applyMatchupDelta(
 
   homeRow.overall_scores += homePoints;
   awayRow.overall_scores += awayPoints;
+}
+
+export function incrementMatchesPlayed(
+  standingsA: Map<string, StandingRow>,
+  standingsB: Map<string, StandingRow>
+) {
+  for (const row of standingsA.values()) {
+    row.mp += 1;
+  }
+  for (const row of standingsB.values()) {
+    row.mp += 1;
+  }
 }
 
 export function sortAndRank(rows: Map<string, StandingRow>) {
