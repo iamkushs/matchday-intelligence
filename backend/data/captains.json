@@ -68,69 +68,69 @@
       }
     },
     "29": {
-      "gw28-1": {
-        "homeCaptain": 3610641,
+      "gw29-1": {
+        "homeCaptain": 449240,
+        "awayCaptain": 3610641
+      },
+      "gw29-2": {
+        "homeCaptain": 2488961,
         "awayCaptain": 10959
       },
-      "gw28-2": {
-        "homeCaptain": 2001511,
-        "awayCaptain": 449240
+      "gw29-3": {
+        "homeCaptain": 2549927,
+        "awayCaptain": 2001511
       },
-      "gw28-3": {
-        "homeCaptain": 5123494,
-        "awayCaptain": 2488961
+      "gw29-4": {
+        "homeCaptain": 19716,
+        "awayCaptain": 5123494
       },
-      "gw28-4": {
-        "homeCaptain": 4087222,
-        "awayCaptain": 2549927
-      },
-      "gw28-5": {
+      "gw29-5": {
         "homeCaptain": null,
-        "awayCaptain": 19716
+        "awayCaptain": 4087222
       },
-      "gw28-6": {
-        "homeCaptain": 5400487,
+      "gw29-6": {
+        "homeCaptain": 2169008,
         "awayCaptain": null
       },
-      "gw28-7": {
-        "homeCaptain": 3123314,
-        "awayCaptain": 2169008
+      "gw29-7": {
+        "homeCaptain": 3144697,
+        "awayCaptain": 5400487
       },
-      "gw28-8": {
+      "gw29-8": {
         "homeCaptain": 7228653,
-        "awayCaptain": 3144697
+        "awayCaptain": 3123314
       },
-      "gw28-9": {
-        "homeCaptain": 4299572,
+      "gw29-9": {
+        "homeCaptain": 5253559,
+        "awayCaptain": 4299572
+      },
+      "gw29-10": {
+        "homeCaptain": 2487276,
         "awayCaptain": 1999030
       },
-      "gw28-10": {
-        "homeCaptain": 3122754,
-        "awayCaptain": 5253559
+      "gw29-11": {
+        "homeCaptain": 864279,
+        "awayCaptain": 3122754
       },
-      "gw28-11": {
-        "homeCaptain": 2380788,
-        "awayCaptain": 2487276
+      "gw29-12": {
+        "homeCaptain": 3179959,
+        "awayCaptain": 2380788
       },
-      "gw28-12": {
-        "homeCaptain": 6690271,
-        "awayCaptain": 864279
+      "gw29-13": {
+        "homeCaptain": 3125421,
+        "awayCaptain": 6690271
       },
-      "gw28-13": {
-        "homeCaptain": 3157249,
-        "awayCaptain": 3179959
+      "gw29-14": {
+        "homeCaptain": null,
+        "awayCaptain": 3157249
       },
-      "gw28-14": {
-        "homeCaptain": 4365338,
-        "awayCaptain": 3125421
+      "gw29-15": {
+        "homeCaptain": 3372682,
+        "awayCaptain": 4365338
       },
-      "gw28-15": {
-        "homeCaptain": 39037,
-        "awayCaptain": 7589170
-      },
-      "gw28-16": {
+      "gw29-16": {
         "homeCaptain": 189849,
-        "awayCaptain": 3372682
+        "awayCaptain": 39037
       }
     }
   }
