@@ -1,139 +1,137 @@
 {
-    "default":  {
-
-                },
-    "byGameweek":  {
-                       "23":  {
-                                  "gw23-4":  {
-                                                 "homeCaptain":  5123494,
-                                                 "awayCaptain":  9337960
-                                             },
-                                  "gw23-9":  {
-                                                 "homeCaptain":  4365338,
-                                                 "awayCaptain":  3193774
-                                             },
-                                  "gw23-6":  {
-                                                 "homeCaptain":  580281,
-                                                 "awayCaptain":  3120343
-                                             },
-                                  "gw23-7":  {
-                                                 "homeCaptain":  449240,
-                                                 "awayCaptain":  19716
-                                             },
-                                  "gw23-8":  {
-                                                 "homeCaptain":  2488961,
-                                                 "awayCaptain":  2641137
-                                             },
-                                  "gw23-12":  {
-                                                  "homeCaptain":  2380788,
-                                                  "awayCaptain":  5370853
-                                              },
-                                  "gw23-16":  {
-                                                  "homeCaptain":  2547868,
-                                                  "awayCaptain":  864279
-                                              },
-                                  "gw23-2":  {
-                                                 "homeCaptain":  3605964,
-                                                 "awayCaptain":  3123314
-                                             },
-                                  "gw23-3":  {
-                                                 "homeCaptain":  4087222,
-                                                 "awayCaptain":  7228653
-                                             },
-                                  "gw23-14":  {
-                                                  "homeCaptain":  27597,
-                                                  "awayCaptain":  3125421
-                                              },
-                                  "gw23-5":  {
-                                                 "homeCaptain":  2001511,
-                                                 "awayCaptain":  2169008
-                                             },
-                                  "gw23-11":  {
-                                                  "homeCaptain":  6690271,
-                                                  "awayCaptain":  55642
-                                              },
-                                  "gw23-13":  {
-                                                  "homeCaptain":  3118967,
-                                                  "awayCaptain":  null
-                                              },
-                                  "gw23-15":  {
-                                                  "homeCaptain":  3165356,
-                                                  "awayCaptain":  5930823
-                                              },
-                                  "gw23-10":  {
-                                                  "homeCaptain":  3157249,
-                                                  "awayCaptain":  39037
-                                              },
-                                  "gw23-1":  {
-                                                 "homeCaptain":  5650872,
-                                                 "awayCaptain":  3610641
-                                             }
-                              },
-                       "28":  {
-                                  "gw28-4":  {
-                                                 "homeCaptain":  4087222,
-                                                 "awayCaptain":  2641137
-                                             },
-                                  "gw28-14":  {
-                                                  "homeCaptain":  5130955,
-                                                  "awayCaptain":  961158
-                                              },
-                                  "gw28-12":  {
-                                                  "homeCaptain":  5436698,
-                                                  "awayCaptain":  600026
-                                              },
-                                  "gw28-9":  {
-                                                 "homeCaptain":  3193774,
-                                                 "awayCaptain":  null
-                                             },
-                                  "gw28-7":  {
-                                                 "homeCaptain":  1296207,
-                                                 "awayCaptain":  null
-                                             },
-                                  "gw28-2":  {
-                                                 "homeCaptain":  8336609,
-                                                 "awayCaptain":  449240
-                                             },
-                                  "gw28-6":  {
-                                                 "homeCaptain":  5650872,
-                                                 "awayCaptain":  4253839
-                                             },
-                                  "gw28-16":  {
-                                                  "homeCaptain":  55642,
-                                                  "awayCaptain":  5370853
-                                              },
-                                  "gw28-3":  {
-                                                 "homeCaptain":  5141069,
-                                                 "awayCaptain":  2488961
-                                             },
-                                  "gw28-13":  {
-                                                  "homeCaptain":  86139,
-                                                  "awayCaptain":  null
-                                              },
-                                  "gw28-15":  {
-                                                  "homeCaptain":  null,
-                                                  "awayCaptain":  7589170
-                                              },
-                                  "gw28-11":  {
-                                                  "homeCaptain":  1857573,
-                                                  "awayCaptain":  2547868
-                                              },
-                                  "gw28-10":  {
-                                                  "homeCaptain":  3118967,
-                                                  "awayCaptain":  5253559
-                                              },
-                                  "gw28-1":  {
-                                                 "homeCaptain":  2871840,
-                                                 "awayCaptain":  580281
-                                             },
-                                  "gw28-5":  {
-                                                 "homeCaptain":  1258497,
-                                                 "awayCaptain":  17096
-                                             },
-                                  "gw28-8":  {
-                                                 "homeCaptain":  7228653,
-                                                 "awayCaptain":  3144697
-                                             }
-                              }
-                   }
+  "default": {},
+  "byGameweek": {
+    "23": {
+      "gw23-4": {
+        "homeCaptain": 5123494,
+        "awayCaptain": 9337960
+      },
+      "gw23-9": {
+        "homeCaptain": 4365338,
+        "awayCaptain": 3193774
+      },
+      "gw23-6": {
+        "homeCaptain": 580281,
+        "awayCaptain": 3120343
+      },
+      "gw23-7": {
+        "homeCaptain": 449240,
+        "awayCaptain": 19716
+      },
+      "gw23-8": {
+        "homeCaptain": 2488961,
+        "awayCaptain": 2641137
+      },
+      "gw23-12": {
+        "homeCaptain": 2380788,
+        "awayCaptain": 5370853
+      },
+      "gw23-16": {
+        "homeCaptain": 2547868,
+        "awayCaptain": 864279
+      },
+      "gw23-2": {
+        "homeCaptain": 3605964,
+        "awayCaptain": 3123314
+      },
+      "gw23-3": {
+        "homeCaptain": 4087222,
+        "awayCaptain": 7228653
+      },
+      "gw23-14": {
+        "homeCaptain": 27597,
+        "awayCaptain": 3125421
+      },
+      "gw23-5": {
+        "homeCaptain": 2001511,
+        "awayCaptain": 2169008
+      },
+      "gw23-11": {
+        "homeCaptain": 6690271,
+        "awayCaptain": 55642
+      },
+      "gw23-13": {
+        "homeCaptain": 3118967,
+        "awayCaptain": null
+      },
+      "gw23-15": {
+        "homeCaptain": 3165356,
+        "awayCaptain": 5930823
+      },
+      "gw23-10": {
+        "homeCaptain": 3157249,
+        "awayCaptain": 39037
+      },
+      "gw23-1": {
+        "homeCaptain": 5650872,
+        "awayCaptain": 3610641
+      }
+    },
+    "28": {
+      "gw28-1": {
+        "homeCaptain": 3610641,
+        "awayCaptain": 10959
+      },
+      "gw28-2": {
+        "homeCaptain": 2001511,
+        "awayCaptain": 449240
+      },
+      "gw28-3": {
+        "homeCaptain": 5123494,
+        "awayCaptain": 2488961
+      },
+      "gw28-4": {
+        "homeCaptain": 4087222,
+        "awayCaptain": 2549927
+      },
+      "gw28-5": {
+        "homeCaptain": null,
+        "awayCaptain": 19716
+      },
+      "gw28-6": {
+        "homeCaptain": 5400487,
+        "awayCaptain": null
+      },
+      "gw28-7": {
+        "homeCaptain": 3123314,
+        "awayCaptain": 2169008
+      },
+      "gw28-8": {
+        "homeCaptain": 7228653,
+        "awayCaptain": 3144697
+      },
+      "gw28-9": {
+        "homeCaptain": 4299572,
+        "awayCaptain": 1999030
+      },
+      "gw28-10": {
+        "homeCaptain": 3122754,
+        "awayCaptain": 5253559
+      },
+      "gw28-11": {
+        "homeCaptain": 2380788,
+        "awayCaptain": 2487276
+      },
+      "gw28-12": {
+        "homeCaptain": 6690271,
+        "awayCaptain": 864279
+      },
+      "gw28-13": {
+        "homeCaptain": 3157249,
+        "awayCaptain": 3179959
+      },
+      "gw28-14": {
+        "homeCaptain": 4365338,
+        "awayCaptain": 3125421
+      },
+      "gw28-15": {
+        "homeCaptain": 39037,
+        "awayCaptain": 7589170
+      },
+      "gw28-16": {
+        "homeCaptain": 189849,
+        "awayCaptain": 3372682
+      }
+    }
+  }
 }

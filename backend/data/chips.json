@@ -21,27 +21,49 @@
       }
     },
     "28": {
-      "Slippery Legends": {
+      "Merseyside Mancunians": {
         "chipType": "challenge",
         "challengeOpponentTeamName": "North Eastern Hillbillies"
       },
-      "Peaky Blinders": {
+      "Filthy Foxes": {
+        "chipType": "challenge",
+        "challengeOpponentTeamName": "Jota Ke Chhorey"
+      },
+      "Sharingan Warriors": {
         "chipType": "challenge",
         "challengeOpponentTeamName": "Dark Knights"
       },
-      "Reds of Winterfell": {
+      "Peaky Blinders": {
         "chipType": "double_pointer"
       },
-      "Invisible Royals": {
+      "JoBros": {
         "chipType": "double_pointer"
+      },
+      "Team Rocket": {
+        "chipType": "double_pointer"
+      },
+      "Super Saiyans": {
+        "chipType": "double_pointer"
+      },
+      "Royal Reds": {
+        "chipType": "double_pointer"
+      },
+      "Goal Diggers": {
+        "chipType": "double_pointer"
+      },
+      "Blaugrana Cules": {
+        "chipType": "double_pointer"
+      },
+      "Banter Bros": {
+        "chipType": "win_win"
+      },
+      "Odia Outlaws": {
+        "chipType": "win_win"
       },
       "Highbury Citizens": {
-        "chipType": "double_pointer"
+        "chipType": "win_win"
       },
-      "xG Xorcists": {
-        "chipType": "double_pointer"
-      },
-      "Filthy Foxes": {
+      "Maresca's Villagers": {
         "chipType": "win_win"
       }
     }
