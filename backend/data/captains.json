@@ -132,6 +132,72 @@
         "homeCaptain": 189849,
         "awayCaptain": 39037
       }
+    },
+    "30": {
+      "gw30-1": {
+        "homeCaptain": 3610641,
+        "awayCaptain": 4670961
+      },
+      "gw30-2": {
+        "homeCaptain": 449240,
+        "awayCaptain": 2549927
+      },
+      "gw30-3": {
+        "homeCaptain": 10959,
+        "awayCaptain": 19716
+      },
+      "gw30-4": {
+        "homeCaptain": 2001511,
+        "awayCaptain": 3120343
+      },
+      "gw30-5": {
+        "homeCaptain": 5141069,
+        "awayCaptain": 1956946
+      },
+      "gw30-6": {
+        "homeCaptain": 4087222,
+        "awayCaptain": 9337960
+      },
+      "gw30-7": {
+        "homeCaptain": 1258497,
+        "awayCaptain": 4080042
+      },
+      "gw30-8": {
+        "homeCaptain": 5650872,
+        "awayCaptain": 1296207
+      },
+      "gw30-9": {
+        "homeCaptain": 3193774,
+        "awayCaptain": 2547868
+      },
+      "gw30-10": {
+        "homeCaptain": 3165356,
+        "awayCaptain": 600026
+      },
+      "gw30-11": {
+        "homeCaptain": 1999030,
+        "awayCaptain": 3179959
+      },
+      "gw30-12": {
+        "homeCaptain": 3118967,
+        "awayCaptain": 3125421
+      },
+      "gw30-13": {
+        "homeCaptain": 1857573,
+        "awayCaptain": 6760
+      },
+      "gw30-14": {
+        "homeCaptain": 6690271,
+        "awayCaptain": 5370853
+      },
+      "gw30-15": {
+        "homeCaptain": 3157249,
+        "awayCaptain": 189849
+      },
+      "gw30-16": {
+        "homeCaptain": 4365338,
+        "awayCaptain": 3263009
+      }
     }
   }
 }

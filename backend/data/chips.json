@@ -66,6 +66,46 @@
       "Maresca's Villagers": {
         "chipType": "win_win"
       }
+    },
+    "30": {
+      "Bianconeri Blues": {
+        "chipType": "challenge",
+        "challengeOpponentTeamName": "North Eastern Hillbillies"
+      },
+      "Highbury Citizens": {
+        "chipType": "challenge",
+        "challengeOpponentTeamName": "xG Xorcists"
+      },
+      "Team Rocket": {
+        "chipType": "challenge",
+        "challengeOpponentTeamName": "North Eastern Hillbillies"
+      },
+      "Invisible Royals": {
+        "chipType": "challenge",
+        "challengeOpponentTeamName": "North Eastern Hillbillies"
+      },
+      "JoBros": {
+        "chipType": "challenge",
+        "challengeOpponentTeamName": "xG Xorcists"
+      },
+      "Filthy Foxes": {
+        "chipType": "double_pointer"
+      },
+      "Maresca's Villagers": {
+        "chipType": "double_pointer"
+      },
+      "Sharingan Warriors": {
+        "chipType": "double_pointer"
+      },
+      "The Anfield Devils": {
+        "chipType": "double_pointer"
+      },
+      "The Invincibles": {
+        "chipType": "double_pointer"
+      },
+      "Blaugrana Cules": {
+        "chipType": "win_win"
+      }
     }
   }
 }
