@@ -1513,6 +1513,72 @@
           "name": "Highbury Citizens",
           "managers": []
         }
+      },
+      {
+        "id": "c31-1",
+        "home": {
+          "name": "Odia Outlaws",
+          "managers": []
+        },
+        "away": {
+          "name": "Reds of Winterfell",
+          "managers": []
+        }
+      },
+      {
+        "id": "c31-2",
+        "home": {
+          "name": "Banter Bros",
+          "managers": []
+        },
+        "away": {
+          "name": "Jama Juggernauts",
+          "managers": []
+        }
+      },
+      {
+        "id": "c31-3",
+        "home": {
+          "name": "JoBros",
+          "managers": []
+        },
+        "away": {
+          "name": "Thunderbolts",
+          "managers": []
+        }
+      },
+      {
+        "id": "c31-4",
+        "home": {
+          "name": "Despicable Memelennials",
+          "managers": []
+        },
+        "away": {
+          "name": "Peaky Blinders",
+          "managers": []
+        }
+      },
+      {
+        "id": "c31-5",
+        "home": {
+          "name": "Team Rocket",
+          "managers": []
+        },
+        "away": {
+          "name": "Maresca's Villagers",
+          "managers": []
+        }
+      },
+      {
+        "id": "c31-6",
+        "home": {
+          "name": "Slippery Legends",
+          "managers": []
+        },
+        "away": {
+          "name": "Sharingan Warriors",
+          "managers": []
+        }
       }
     ],
     "32": [
