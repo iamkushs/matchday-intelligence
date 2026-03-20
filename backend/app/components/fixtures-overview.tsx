@@ -41,6 +41,8 @@ export function FixturesOverview({
   const visibleMatchups = matchups;
   const isFinished = gwStatus?.isFinished ?? false;
   const isNotStarted = gwStatus ? !gwStatus.isStarted && !gwStatus.isFinished : false;
+  const showPlayoffsOnly = selectedGameweek === 31 || selectedGameweek === 32;
+  const hasMatchups = visibleMatchups.length > 0;
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: "var(--fpl-bg-deep)" }}>
@@ -105,7 +107,7 @@ export function FixturesOverview({
           </div>
         )}
 
-        {warnings.length > 0 && !isNotStarted && (
+        {warnings.length > 0 && !isNotStarted && !showPlayoffsOnly && (
           <div className="px-5 pb-2">
             <div
               className="text-xs px-3 py-2 rounded-lg bg-white/5 flex items-center justify-between gap-3"
@@ -127,7 +129,22 @@ export function FixturesOverview({
         )}
 
         <div className="px-5 pb-8 space-y-4">
-          {isLoading && matchups.length === 0
+          {showPlayoffsOnly && !hasMatchups ? (
+            <Link
+              href="/playoffs/tvt"
+              className="block p-5 rounded-xl text-center transition-all active:scale-[0.98]"
+              style={{
+                backgroundColor: "var(--fpl-bg-card)",
+                boxShadow: "0 0 0 1px rgba(255, 255, 255, 0.05)",
+                color: "var(--fpl-text-primary)"
+              }}
+            >
+              <div className="text-xs uppercase tracking-wide mb-1" style={{ color: "var(--fpl-text-muted)" }}>
+                TVT Playoffs
+              </div>
+              <div className="text-base font-semibold">View GW{selectedGameweek} fixtures</div>
+            </Link>
+          ) : isLoading && matchups.length === 0
             ? Array.from({ length: 3 }).map((_, index) => (
                 <Skeleton key={index} className="h-32 rounded-xl bg-white/5" />
               ))
