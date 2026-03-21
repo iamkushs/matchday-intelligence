@@ -43,6 +43,7 @@ export function FixturesOverview({
   const isNotStarted = gwStatus ? !gwStatus.isStarted && !gwStatus.isFinished : false;
   const showPlayoffsOnly = selectedGameweek === 31 || selectedGameweek === 32;
   const hasMatchups = visibleMatchups.length > 0;
+  const { playoffMatchups, challengerMatchups } = splitPlayoffMatchups(visibleMatchups);
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: "var(--fpl-bg-deep)" }}>
@@ -148,14 +149,43 @@ export function FixturesOverview({
             ? Array.from({ length: 3 }).map((_, index) => (
                 <Skeleton key={index} className="h-32 rounded-xl bg-white/5" />
               ))
-            : visibleMatchups.map((matchup) => (
-                <FixtureCard
-                  key={matchup.id}
-                  matchup={matchup}
-                  isFinished={isFinished}
-                  showCaptains={Boolean(gwStatus?.isCurrent || gwStatus?.isFinished)}
-                />
-              ))}
+            : (
+                <>
+                  {playoffMatchups.length > 0 && (
+                    <div
+                      className="text-xs uppercase tracking-[0.2em]"
+                      style={{ color: "var(--fpl-text-muted)" }}
+                    >
+                      TVT Playoffs
+                    </div>
+                  )}
+                  {playoffMatchups.map((matchup) => (
+                    <FixtureCard
+                      key={matchup.id}
+                      matchup={matchup}
+                      isFinished={isFinished}
+                      showCaptains={Boolean(gwStatus?.isCurrent || gwStatus?.isFinished)}
+                    />
+                  ))}
+
+                  {challengerMatchups.length > 0 && (
+                    <div
+                      className="text-xs uppercase tracking-[0.2em] pt-2"
+                      style={{ color: "var(--fpl-text-muted)" }}
+                    >
+                      Challenger Playoffs
+                    </div>
+                  )}
+                  {challengerMatchups.map((matchup) => (
+                    <FixtureCard
+                      key={matchup.id}
+                      matchup={matchup}
+                      isFinished={isFinished}
+                      showCaptains={Boolean(gwStatus?.isCurrent || gwStatus?.isFinished)}
+                    />
+                  ))}
+                </>
+              )}
         </div>
 
         {challengeFixtures.length > 0 && (
@@ -429,4 +459,36 @@ function getCaptainLabel(
   }
   const captain = managers.find((manager) => manager.isCaptain);
   return captain?.managerName ?? "TBA";
+}
+
+function splitPlayoffMatchups(matchups: MatchupResponse[]) {
+  const playoffPairs = new Set(
+    [
+      ["Jota Ke Chhorey", "Scarlet Reds"],
+      ["North Eastern Hillbillies", "Dark Knights"],
+      ["The Anfield Devils", "Filthy Foxes"],
+      ["xG Xorcists", "Royal Indians"],
+      ["Bianconeri Blues", "Goal Diggers"],
+      ["Blaugrana Cules", "Footballing Gods"],
+      ["Invisible Royals", "Stretford Kops"],
+      ["The Invincibles", "Highbury Citizens"]
+    ].map(([a, b]) => `${a}::${b}`)
+  );
+
+  const playoffMatchups: MatchupResponse[] = [];
+  const challengerMatchups: MatchupResponse[] = [];
+
+  for (const matchup of matchups) {
+    const home = matchup.home?.name;
+    const away = matchup.away?.name;
+    const key = `${home}::${away}`;
+    const reverseKey = `${away}::${home}`;
+    if (playoffPairs.has(key) || playoffPairs.has(reverseKey)) {
+      playoffMatchups.push(matchup);
+    } else {
+      challengerMatchups.push(matchup);
+    }
+  }
+
+  return { playoffMatchups, challengerMatchups };
 }
