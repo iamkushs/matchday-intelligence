@@ -7,6 +7,11 @@ import type { ChallengeFixture, GameweekStatus, MatchupResponse } from "../../li
 import { stadiumImages } from "../../lib/stadiumImages";
 import { Skeleton } from "./ui/skeleton";
 import { useRankings } from "../../lib/useRankings";
+import {
+  buildAggregateSummary,
+  buildPlayoffLegScores
+} from "../../lib/playoffs";
+import { usePlayoffsScores } from "../../lib/usePlayoffsScores";
 
 type FixtureDetailViewProps = {
   fixture: MatchupResponse | null;
@@ -81,6 +86,17 @@ export function FixtureDetailView({
           item.challengerTeamName === fixture.away.name)
     );
   }, [challengeFixtures, fixture, gw]);
+  const isPlayoffFixture = useMemo(
+    () => isTvtPlayoffFixture(fixture.home.name, fixture.away.name),
+    [fixture.home.name, fixture.away.name]
+  );
+  const playoffsScores = usePlayoffsScores();
+  const playoffLegs = isPlayoffFixture
+    ? buildPlayoffLegScores(fixtureToPlayoff(fixture), playoffsScores.leg1.data, playoffsScores.leg2.data)
+    : [];
+  const playoffAggregate = isPlayoffFixture
+    ? buildAggregateSummary(playoffLegs)
+    : null;
   const [activeModalSide, setActiveModalSide] = useState<"home" | "away" | null>(
     null
   );
@@ -261,7 +277,7 @@ export function FixtureDetailView({
           </div>
         </section>
 
-        {challengeInfo && (
+        {challengeInfo && !isPlayoffFixture && (
           <div className="px-5 pb-2">
             <div
               className="text-xs px-3 py-2 rounded-lg"
@@ -276,13 +292,15 @@ export function FixtureDetailView({
           </div>
         )}
 
-        <CurrentStandings
-          gw={gw}
-          homeTeam={fixture.home.name}
-          awayTeam={fixture.away.name}
-        />
+        {!isPlayoffFixture && (
+          <CurrentStandings
+            gw={gw}
+            homeTeam={fixture.home.name}
+            awayTeam={fixture.away.name}
+          />
+        )}
 
-        {pendingNotices.length > 0 && (
+        {!isPlayoffFixture && pendingNotices.length > 0 && (
           <div className="px-5 pb-2 space-y-2">
             {pendingNotices.map((notice) => (
               <div
@@ -310,44 +328,101 @@ export function FixtureDetailView({
           <div className="h-px bg-white/5 mb-6" />
         </div>
 
-        <section className="px-5 pb-8">
-          <h2
-            className="text-xs font-semibold tracking-wider uppercase mb-4"
-            style={{ color: "var(--fpl-text-muted)" }}
-          >
-            Breakdown
-          </h2>
+        {isPlayoffFixture ? (
+          <section className="px-5 pb-8">
+            <h2
+              className="text-xs font-semibold tracking-wider uppercase mb-4"
+              style={{ color: "var(--fpl-text-muted)" }}
+            >
+              Playoff Legs
+            </h2>
+            <div className="space-y-4">
+              {playoffLegs.map((leg) => (
+                <div
+                  key={leg.leg}
+                  className="p-4 rounded-xl"
+                  style={{
+                    backgroundColor: "var(--fpl-bg-card)",
+                    boxShadow: "0 0 0 1px rgba(255, 255, 255, 0.05)"
+                  }}
+                >
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="text-sm font-semibold" style={{ color: "var(--fpl-text-primary)" }}>
+                      GW{leg.gw}
+                    </div>
+                    <div className="text-[11px] uppercase" style={{ color: "var(--fpl-text-muted)" }}>
+                      Leg {leg.leg}
+                    </div>
+                  </div>
+                  <div className="flex items-center justify-center gap-4">
+                    <span className="text-2xl font-bold tabular-nums" style={{ color: teamColors.home }}>
+                      {leg.team1Score ?? "--"}
+                    </span>
+                    <span className="text-base" style={{ color: "var(--fpl-text-muted)" }}>
+                      -
+                    </span>
+                    <span className="text-2xl font-bold tabular-nums" style={{ color: teamColors.away }}>
+                      {leg.team2Score ?? "--"}
+                    </span>
+                  </div>
+                  <div className="text-xs text-center mt-2" style={{ color: "var(--fpl-text-muted)" }}>
+                    {formatLegStatus(leg.status)}
+                  </div>
+                </div>
+              ))}
+              {playoffAggregate && (
+                <div
+                  className="text-xs text-center"
+                  style={{ color: "var(--fpl-text-muted)" }}
+                >
+                  Aggregate: {playoffAggregate.aggregateTeam1Score ?? "--"} -{" "}
+                  {playoffAggregate.aggregateTeam2Score ?? "--"}
+                </div>
+              )}
+            </div>
+          </section>
+        ) : (
+          <section className="px-5 pb-8">
+            <h2
+              className="text-xs font-semibold tracking-wider uppercase mb-4"
+              style={{ color: "var(--fpl-text-muted)" }}
+            >
+              Breakdown
+            </h2>
 
-          <div className="space-y-4">
-            <TeamBreakdown
-              label="Home"
-              side={fixture.home}
-              accentColor={teamColors.home}
-              align="left"
-              showCaptains={showCaptains}
-            />
-            <TeamBreakdown
-              label="Away"
-              side={fixture.away}
-              accentColor={teamColors.away}
-              align="right"
-              showCaptains={showCaptains}
-            />
-          </div>
-        </section>
+            <div className="space-y-4">
+              <TeamBreakdown
+                label="Home"
+                side={fixture.home}
+                accentColor={teamColors.home}
+                align="left"
+                showCaptains={showCaptains}
+              />
+              <TeamBreakdown
+                label="Away"
+                side={fixture.away}
+                accentColor={teamColors.away}
+                align="right"
+                showCaptains={showCaptains}
+              />
+            </div>
+          </section>
+        )}
       </div>
 
-      <CaptainSelectionModal
-        isOpen={Boolean(activeModalSide)}
-        side={activeModalSide}
-        fixture={fixture}
-        gw={gw}
-        onClose={() => setActiveModalSide(null)}
-        onSaved={() => {
-          setActiveModalSide(null);
-          onRefresh?.();
-        }}
-      />
+      {!isPlayoffFixture && (
+        <CaptainSelectionModal
+          isOpen={Boolean(activeModalSide)}
+          side={activeModalSide}
+          fixture={fixture}
+          gw={gw}
+          onClose={() => setActiveModalSide(null)}
+          onSaved={() => {
+            setActiveModalSide(null);
+            onRefresh?.();
+          }}
+        />
+      )}
     </div>
   );
 }
@@ -566,6 +641,42 @@ function getStadiumImage(
   }
   const index = Math.abs(hash) % images.length;
   return `/Assets/${images[index]}`;
+}
+
+function isTvtPlayoffFixture(team1: string, team2: string) {
+  const pairs = new Set(
+    [
+      ["Jota Ke Chhorey", "Scarlet Reds"],
+      ["North Eastern Hillbillies", "Dark Knights"],
+      ["The Anfield Devils", "Filthy Foxes"],
+      ["xG Xorcists", "Royal Indians"],
+      ["Bianconeri Blues", "Goal Diggers"],
+      ["Blaugrana Cules", "Footballing Gods"],
+      ["Invisible Royals", "Stretford Kops"],
+      ["The Invincibles", "Highbury Citizens"]
+    ].map(([a, b]) => `${a}::${b}`)
+  );
+  return pairs.has(`${team1}::${team2}`) || pairs.has(`${team2}::${team1}`);
+}
+
+function fixtureToPlayoff(fixture: MatchupResponse) {
+  return {
+    fixtureId: "playoff",
+    round: "Round of 16" as const,
+    competition: "tvt_playoffs" as const,
+    team1: fixture.home.name,
+    team2: fixture.away.name,
+    legs: [
+      { gw: 31, leg: 1 as const },
+      { gw: 32, leg: 2 as const }
+    ]
+  };
+}
+
+function formatLegStatus(status: "upcoming" | "live" | "finished") {
+  if (status === "finished") return "Finished";
+  if (status === "live") return "Live";
+  return "Upcoming";
 }
 
 type CaptainSelectionModalProps = {
