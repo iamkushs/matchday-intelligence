@@ -381,7 +381,9 @@ export function FixtureDetailView({
               )}
             </div>
           </section>
-        ) : (
+        ) : null}
+
+        {(!isPlayoffFixture || gwStatus?.isCurrent) && (
           <section className="px-5 pb-8">
             <h2
               className="text-xs font-semibold tracking-wider uppercase mb-4"
