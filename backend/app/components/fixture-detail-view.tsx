@@ -300,7 +300,7 @@ export function FixtureDetailView({
           />
         )}
 
-        {!isPlayoffFixture && pendingNotices.length > 0 && (
+        {pendingNotices.length > 0 && (
           <div className="px-5 pb-2 space-y-2">
             {pendingNotices.map((notice) => (
               <div
@@ -410,19 +410,17 @@ export function FixtureDetailView({
         )}
       </div>
 
-      {!isPlayoffFixture && (
-        <CaptainSelectionModal
-          isOpen={Boolean(activeModalSide)}
-          side={activeModalSide}
-          fixture={fixture}
-          gw={gw}
-          onClose={() => setActiveModalSide(null)}
-          onSaved={() => {
-            setActiveModalSide(null);
-            onRefresh?.();
-          }}
-        />
-      )}
+      <CaptainSelectionModal
+        isOpen={Boolean(activeModalSide)}
+        side={activeModalSide}
+        fixture={fixture}
+        gw={gw}
+        onClose={() => setActiveModalSide(null)}
+        onSaved={() => {
+          setActiveModalSide(null);
+          onRefresh?.();
+        }}
+      />
     </div>
   );
 }
